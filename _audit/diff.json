@@ -1,0 +1,487 @@
+{
+  "CA0001": {
+    "title": "إبلاغ",
+    "specPlaceholders": 29,
+    "codeFields": 31,
+    "codeCheckGroups": 4,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "violation_1",
+      "violation_1_note",
+      "violation_2",
+      "violation_2_note",
+      "violation_3",
+      "violation_3_note",
+      "violation_4",
+      "violation_4_note",
+      "violation_5",
+      "violation_5_note",
+      "violation_6",
+      "violation_6_note",
+      "violation_7",
+      "violation_7_note",
+      "routing"
+    ]
+  },
+  "CA0002": {
+    "title": "إبلاغ عن",
+    "specPlaceholders": 29,
+    "codeFields": 43,
+    "codeCheckGroups": 4,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "danger_1",
+      "danger_1_note",
+      "danger_2",
+      "danger_2_note",
+      "danger_3",
+      "danger_3_note",
+      "danger_4",
+      "danger_4_note",
+      "danger_5",
+      "danger_5_note",
+      "danger_6",
+      "danger_6_note",
+      "danger_7",
+      "danger_7_note",
+      "danger_8",
+      "danger_8_note",
+      "danger_9",
+      "danger_9_note",
+      "danger_10",
+      "danger_10_note",
+      "danger_11",
+      "danger_11_note",
+      "danger_12",
+      "danger_12_note",
+      "danger_13",
+      "danger_13_note",
+      "routing"
+    ]
+  },
+  "CA0003": {
+    "title": "إبلاغ",
+    "specPlaceholders": 35,
+    "codeFields": 49,
+    "codeCheckGroups": 4,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "damage_1",
+      "damage_1_note",
+      "damage_2",
+      "damage_2_note",
+      "damage_3",
+      "damage_3_note",
+      "damage_4",
+      "damage_4_note",
+      "damage_5",
+      "damage_5_note",
+      "damage_6",
+      "damage_6_note",
+      "damage_7",
+      "damage_7_note",
+      "damage_8",
+      "damage_8_note",
+      "damage_9",
+      "damage_9_note",
+      "damage_10",
+      "damage_10_note",
+      "damage_11",
+      "damage_11_note",
+      "damage_12",
+      "damage_12_note",
+      "damage_13",
+      "damage_13_note",
+      "routing"
+    ]
+  },
+  "CA0004": {
+    "title": "طلب",
+    "specPlaceholders": 33,
+    "codeFields": 27,
+    "codeCheckGroups": 4,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "details_1",
+      "details_2",
+      "details_3",
+      "details_4",
+      "details_5",
+      "details_6",
+      "details_7",
+      "routing",
+      "reportsOther"
+    ]
+  },
+  "CB0001": {
+    "title": "دفع",
+    "specPlaceholders": 26,
+    "codeFields": 22,
+    "codeCheckGroups": 2,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CB0002": {
+    "title": "طلب",
+    "specPlaceholders": 26,
+    "codeFields": 26,
+    "codeCheckGroups": 2,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "periodFrom",
+      "periodTo",
+      "cyclesCount",
+      "periodNotes",
+      "routing"
+    ]
+  },
+  "CB0003": {
+    "title": "طلب",
+    "specPlaceholders": 21,
+    "codeFields": 27,
+    "codeCheckGroups": 3,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "currentClass",
+      "billMonthYear",
+      "periodTo",
+      "cyclesCount",
+      "periodNotes",
+      "routing"
+    ]
+  },
+  "CB0004": {
+    "title": "طلب",
+    "specPlaceholders": 29,
+    "codeFields": 27,
+    "codeCheckGroups": 4,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "billMonth",
+      "billYear",
+      "listNotes",
+      "routing"
+    ]
+  },
+  "CB0005": {
+    "title": "إجراءات دفعات ",
+    "specPlaceholders": 26,
+    "codeFields": 22,
+    "codeCheckGroups": 2,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CB0006": {
+    "title": "طلب",
+    "specPlaceholders": 29,
+    "codeFields": 27,
+    "codeCheckGroups": 3,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "totalDebt",
+      "installmentsCount",
+      "firstInstallmentDate",
+      "settlementNotes",
+      "routing"
+    ]
+  },
+  "CS0001": {
+    "title": "طلب",
+    "specPlaceholders": 33,
+    "codeFields": 34,
+    "codeCheckGroups": 3,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "doc_tax_date",
+      "doc_ind_date",
+      "doc_gov_date",
+      "doc_inv_date",
+      "doc_qassam_date",
+      "doc_claim_date",
+      "routing"
+    ]
+  },
+  "CS0002": {
+    "title": "طلب ",
+    "specPlaceholders": 30,
+    "codeFields": 26,
+    "codeCheckGroups": 2,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CS0003": {
+    "title": "طلب ",
+    "specPlaceholders": 27,
+    "codeFields": 24,
+    "codeCheckGroups": 3,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "requestedClass",
+      "routing"
+    ]
+  },
+  "CS0004": {
+    "title": "طلب ",
+    "specPlaceholders": 28,
+    "codeFields": 24,
+    "codeCheckGroups": 2,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CS0005": {
+    "title": "تفعيل",
+    "specPlaceholders": 27,
+    "codeFields": 23,
+    "codeCheckGroups": 2,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CS0006": {
+    "title": "إلغاء اشتراك",
+    "specPlaceholders": 27,
+    "codeFields": 23,
+    "codeCheckGroups": 2,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CS0007": {
+    "title": "الاعتراض",
+    "specPlaceholders": 28,
+    "codeFields": 24,
+    "codeCheckGroups": 2,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CS0008": {
+    "title": "طلب",
+    "specPlaceholders": 41,
+    "codeFields": 37,
+    "codeCheckGroups": 2,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CS0009": {
+    "title": "قراء",
+    "specPlaceholders": 27,
+    "codeFields": 23,
+    "codeCheckGroups": 2,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CS0010": {
+    "title": "طلب",
+    "specPlaceholders": 33,
+    "codeFields": 34,
+    "codeCheckGroups": 3,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "doc_tax_date",
+      "doc_ind_date",
+      "doc_gov_date",
+      "doc_inv_date",
+      "receipt_service_date",
+      "receipt_lastbill_date",
+      "routing"
+    ]
+  },
+  "CS0011": {
+    "title": "طلب",
+    "specPlaceholders": 47,
+    "codeFields": 50,
+    "codeCheckGroups": 2,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "doc_tax_date",
+      "doc_ind_date",
+      "doc_gov_date",
+      "doc_inv_date",
+      "receipt_service_date",
+      "receipt_lastbill_date",
+      "doc_inherit_date",
+      "routing"
+    ]
+  },
+  "CT0001": {
+    "title": "شكوى",
+    "specPlaceholders": 31,
+    "codeFields": 26,
+    "codeCheckGroups": 3,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CT0002": {
+    "title": "شكوى",
+    "specPlaceholders": 29,
+    "codeFields": 25,
+    "codeCheckGroups": 2,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CT0003": {
+    "title": "طلب تغيير كابل مشترك ",
+    "specPlaceholders": 31,
+    "codeFields": 26,
+    "codeCheckGroups": 3,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CT0004": {
+    "title": "طلب",
+    "specPlaceholders": 31,
+    "codeFields": 29,
+    "codeCheckGroups": 6,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "splitClass1",
+      "splitClass2",
+      "splitClass3",
+      "routing"
+    ]
+  },
+  "CT0005": {
+    "title": "طلب",
+    "specPlaceholders": 31,
+    "codeFields": 26,
+    "codeCheckGroups": 3,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CT0006": {
+    "title": "طلب",
+    "specPlaceholders": 31,
+    "codeFields": 26,
+    "codeCheckGroups": 3,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CT0007": {
+    "title": "طلب",
+    "specPlaceholders": 31,
+    "codeFields": 26,
+    "codeCheckGroups": 3,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CT0008": {
+    "title": "طلب",
+    "specPlaceholders": 31,
+    "codeFields": 26,
+    "codeCheckGroups": 3,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CT0009": {
+    "title": "طلب فحص",
+    "specPlaceholders": 31,
+    "codeFields": 26,
+    "codeCheckGroups": 3,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  },
+  "CT0010": {
+    "title": "طلب",
+    "specPlaceholders": 31,
+    "codeFields": 26,
+    "codeCheckGroups": 3,
+    "requiredFieldsCount": 0,
+    "missingInCode": [],
+    "extraInCode": [
+      "refNo",
+      "routing"
+    ]
+  }
+}

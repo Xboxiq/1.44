@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+  <meta name="description" content="نظام أتمتة نماذج خدمات المشتركين — الشركة العامة لتوزيع كهرباء بغداد، قطاع الرصافة." />
+  <title>نظام أتمتة نماذج خدمات المشتركين — كهرباء الرصافة</title>
+  <link rel="icon" href="assets/img/logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/img/logo.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/css/styles.css?v=30" />
+  <link rel="stylesheet" href="assets/css/print.css?v=30" media="print" />
+</head>
+<body class="cmd-shell">
+  <a href="#app" class="skip-link">تخطٍّ إلى المحتوى</a>
+
+  <!-- Ambient Spatial Background — radial glows + grid texture (decorative) -->
+  <div class="cmd-bg" aria-hidden="true">
+    <div class="cmd-bg__glow cmd-bg__glow--navy"></div>
+    <div class="cmd-bg__glow cmd-bg__glow--crimson"></div>
+    <div class="cmd-bg__glow cmd-bg__glow--gold"></div>
+    <div class="cmd-bg__grid"></div>
+  </div>
+
+  <!-- Command Rail — collapsible side navigation (80 → 256 on hover) -->
+  <nav class="cmd-rail" aria-label="التنقّل السريع">
+    <a class="cmd-rail__brand" href="#/" aria-label="الصفحة الرئيسية">
+      <span class="cmd-rail__brand-mark" aria-hidden="true">
+        <img src="assets/img/logo.png" alt="" />
+      </span>
+      <span class="cmd-rail__brand-text">
+        <strong>خدمات المشتركين</strong>
+        <small>SERVICE HUB · 31</small>
+      </span>
+    </a>
+
+    <ul class="cmd-rail__nav">
+      <li><a class="cmd-rail__link is-active" href="#/" data-tip="الرئيسية">
+        <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
+        <span class="cmd-rail__lbl">الرئيسية</span>
+      </a></li>
+      <li><a class="cmd-rail__link" href="#/?sec=CS" data-tip="اشتراكات">
+        <span class="material-symbols-outlined" aria-hidden="true">bolt</span>
+        <span class="cmd-rail__lbl">الاشتراكات</span>
+      </a></li>
+      <li><a class="cmd-rail__link" href="#/?sec=CB" data-tip="جباية">
+        <span class="material-symbols-outlined" aria-hidden="true">account_balance_wallet</span>
+        <span class="cmd-rail__lbl">الجباية</span>
+      </a></li>
+      <li><a class="cmd-rail__link" href="#/?sec=CT" data-tip="فني">
+        <span class="material-symbols-outlined" aria-hidden="true">construction</span>
+        <span class="cmd-rail__lbl">الفني</span>
+      </a></li>
+      <li><a class="cmd-rail__link" href="#/?sec=CA" data-tip="إداري">
+        <span class="material-symbols-outlined" aria-hidden="true">admin_panel_settings</span>
+        <span class="cmd-rail__lbl">الإداري</span>
+      </a></li>
+    </ul>
+
+    <div class="cmd-rail__foot">
+      <a class="cmd-rail__link cmd-rail__link--ghost" href="#/" data-tip="تعليمات">
+        <span class="material-symbols-outlined" aria-hidden="true">help</span>
+        <span class="cmd-rail__lbl">تعليمات</span>
+      </a>
+      <button class="cmd-rail__sos" type="button" aria-label="حالة طوارئ">
+        <span class="material-symbols-outlined" aria-hidden="true">emergency</span>
+        <span class="cmd-rail__lbl">طوارئ</span>
+      </button>
+    </div>
+  </nav>
+
+  <header class="topbar app-chrome">
+    <div class="topbar-inner">
+      <a class="brand" href="#/" aria-label="الصفحة الرئيسية">
+        <span class="brand-mark" aria-hidden="true">
+          <img src="assets/img/logo.png" alt="" class="brand-logo" />
+        </span>
+        <span class="brand-text">
+          <strong>خدمات المشتركين</strong>
+          <small>كهرباء بغداد — الرصافة</small>
+        </span>
+      </a>
+      <div class="topbar-status" role="status" aria-live="polite">
+        <span class="cmd-pulse" aria-hidden="true"></span>
+        <span class="topbar-status__lbl">LIVE · مركز الرصافة</span>
+      </div>
+      <button id="themeToggle" class="icon-btn" type="button" aria-label="تبديل الوضع الليلي" title="الوضع الليلي">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="app" class="app-root">
+    <div class="loading">جارٍ التحميل…</div>
+  </div>
+
+  <!-- Floating Glass Action Bar — global controls -->
+  <div class="cmd-dock" role="toolbar" aria-label="إجراءات سريعة">
+    <a class="cmd-dock__btn" href="#/" title="الرئيسية" aria-label="الرئيسية">
+      <span class="material-symbols-outlined" aria-hidden="true">home</span>
+    </a>
+    <span class="cmd-dock__sep" aria-hidden="true"></span>
+    <button class="cmd-dock__primary" type="button" id="cmdSearchOpen" aria-label="بحث سريع">
+      <span class="material-symbols-outlined" aria-hidden="true">search</span>
+      <span class="cmd-dock__lbl">بحث سريع</span>
+    </button>
+    <span class="cmd-dock__sep" aria-hidden="true"></span>
+    <button class="cmd-dock__btn" type="button" id="cmdToTop" title="عودة للأعلى" aria-label="عودة للأعلى">
+      <span class="material-symbols-outlined" aria-hidden="true">arrow_upward</span>
+    </button>
+  </div>
+
+  <footer class="appfoot app-chrome">
+    <div class="appfoot-top">
+      <div class="appfoot-col appfoot-col--brand">
+        <div class="appfoot-brandline">
+          <span class="appfoot-mark" aria-hidden="true">
+            <img src="assets/img/logo.png" alt="" class="appfoot-logo" />
+          </span>
+          <div class="appfoot-names">
+            <strong class="appfoot-company">الشركة العامة لتوزيع كهرباء بغداد</strong>
+            <span class="appfoot-sector">قطاع الرصافة — خدمات المشتركين</span>
+          </div>
+        </div>
+        <p class="appfoot-project">مشروع التحول الذكي في الشبكة الكهربائية لفرع توزيع كهرباء الرصافة — منطقة مركز الرصافة</p>
+      </div>
+
+      <div class="appfoot-col">
+        <h4 class="appfoot-h">النظام</h4>
+        <ul class="appfoot-list">
+          <li>نظام أتمتة نماذج خدمات المشتركين</li>
+          <li>٣١ خدمة إلكترونية ضمن ٤ أقسام</li>
+          <li>نماذج بطباعة A4 مطابقة للأصل</li>
+        </ul>
+      </div>
+
+      <div class="appfoot-col">
+        <h4 class="appfoot-h">الجهة المنفّذة</h4>
+        <ul class="appfoot-list">
+          <li class="appfoot-org">شركة تدفق الخير</li>
+          <li>التحول الرقمي والأتمتة</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="appfoot-bar">
+      <span class="appfoot-rights">© <span class="appfoot-year">2026</span> الشركة العامة لتوزيع كهرباء بغداد / قطاع الرصافة — جميع الحقوق محفوظة.</span>
+      <span class="appfoot-credit">
+        <span class="appfoot-credit__lbl">Designed &amp; developed by</span>
+        <strong class="appfoot-dev">Hussein</strong>
+      </span>
+    </div>
+  </footer>
+
+  <script src="assets/vendor/pizzip.min.js"></script>
+  <script src="assets/vendor/docxtemplater.js"></script>
+  <script src="assets/vendor/jszip.min.js"></script>
+  <script src="assets/vendor/docx-preview.min.js"></script>
+  <script src="assets/js/docxgen.js?v=18"></script>
+  <script src="assets/js/app.js?v=31"></script>
+</body>
+</html>

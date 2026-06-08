@@ -1,0 +1,1080 @@
+/* ============================================================
+   طباعة A4 — مطابقة للنموذج الورقي الرسمي
+   إعادة هندسة احترافية: محاذاة، توازن، ترتيب، وانضباط فواصل الصفحات
+   ============================================================ */
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  :root {
+    --shade: #ececec;
+    --shade-strong: #d9d9d9;
+    --rule: #000;
+    --rule-soft: #555;
+    --guide-red: #c1121f;
+    --print-font: 'Arial','Liberation Sans','Arimo','Segoe UI','Tahoma',sans-serif;
+  }
+
+  html, body {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  body {
+    display: block !important;
+    font-family: var(--print-font) !important;
+    direction: rtl !important;
+    color: #000 !important;
+  }
+
+  /* =========================================================
+     PRINT ISOLATION v3 — Clone-to-Body
+     ---------------------------------------------------------
+     عند الضغط على طباعة، JS ينسخ #formSheet إلى:
+       <body class="is-printing is-printing--{variant}">
+         <div id="printRoot" class="print-root print-root--{variant}">
+           <div id="printSheet" class="sheet sheet--{variant}">...</div>
+         </div>
+         ... (بقية الـ DOM — مخفي)
+       </body>
+     قاعدة واحدة بسيطة تخفي كل شيء عدا #printRoot.
+     ========================================================= */
+  body.is-printing {
+    width: 210mm !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    background-image: none !important;
+    direction: rtl !important;
+    font-family: var(--print-font) !important;
+    color: #000 !important;
+    transform: none !important;
+    filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  body.is-printing > *:not(#printRoot) { display: none !important; }
+
+  #printRoot {
+    display: block !important;
+    position: static !important;
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    direction: rtl !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  #printSheet {
+    display: block !important;
+    position: static !important;
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 10mm 12mm 12mm !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    color: #000 !important;
+    direction: rtl !important;
+    font-family: var(--print-font) !important;
+    font-size: 11.5px !important;
+    line-height: 1.5 !important;
+    box-sizing: border-box !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  /* تطهير كامل لأي effect بصري داخل النسخة المستنسخة (بلا content: none
+     كي لا نكسر علامات الـ checkboxes والـ pseudo-decorators المشروعة) */
+  #printRoot, #printRoot * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+    color: #000 !important;
+  }
+
+  /* الشعار يبقى ملوّناً للمحافظة على الهوية */
+  #printRoot .sheet-logo,
+  #printRoot .lh-org,
+  #printRoot .lh-project { color: revert !important; }
+  #printRoot .lh-project { color: #232350 !important; }
+  #printRoot .lh-org { color: #c1121f !important; }
+  #printRoot .fld-note--guide { color: #c1121f !important; }
+  #printRoot .sheet-logo { background: transparent !important; }
+
+  /* ============================================================
+     النموذج الأصلي (sheet--original) — تخطيط الجداول الرسمية
+     ============================================================ */
+  body.is-printing--original #printSheet .tbl--grid .lbl { text-align: center !important; }
+  body.is-printing--original #printSheet .tbl,
+  body.is-printing--original #printSheet .tbl--grid,
+  body.is-printing--original #printSheet .tbl--head,
+  body.is-printing--original #printSheet .tbl--matrix,
+  body.is-printing--original #printSheet .tbl--checklist,
+  body.is-printing--original #printSheet .tbl--doctable,
+  body.is-printing--original #printSheet .tbl--routing,
+  body.is-printing--original #printSheet .tbl--sign {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* ============================================================
+     النموذج الذكي (sheet--smart) — نفس البيانات بترتيب مبسّط
+     ============================================================ */
+  body.is-printing--smart #printSheet { font-size: 10pt !important; }
+  body.is-printing--smart #printSheet .smart-flow {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 2mm 4mm !important;
+  }
+  body.is-printing--smart #printSheet .smart-section,
+  body.is-printing--smart #printSheet .smart-titlebar,
+  body.is-printing--smart #printSheet .smart-subhead,
+  body.is-printing--smart #printSheet .smart-pair__fld {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    border-color: #000 !important;
+  }
+  body.is-printing--smart #printSheet .smart-section__title,
+  body.is-printing--smart #printSheet .smart-titlebar,
+  body.is-printing--smart #printSheet .smart-subhead {
+    background: var(--shade) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  body.is-printing--smart #printSheet .smart-pair__fld {
+    background: #fff !important;
+    min-height: 9mm !important;
+  }
+  /* ========================================================= */
+
+  /* إخفاء كل عناصر الواجهة (الأزرار/القوائم/التبويبات/الفوتر/التوست…) */
+  .app-chrome,
+  .topbar,
+  .topbar *,
+  .appfoot,
+  .toast,
+  .skip-link,
+  .crumbs,
+  .svc-head,
+  .tabs,
+  .hero,
+  .sections-wrap,
+  .services-wrap,
+  .preview-bar,
+  .preview-loading,
+  .preview-error,
+  .form-mode-bar,
+  .agent-assist,
+  .cc-bar,
+  .notes-card,
+  .macros,
+  .action-dock,
+  .action-cluster,
+  .aurora,
+  .to-top,
+  .cmd-bg,
+  .cmd-bg *,
+  .cmd-rail,
+  .cmd-rail *,
+  .cmd-dock,
+  .cmd-dock *,
+  .topbar-status,
+  #spatialLive { display: none !important; }
+
+  /* طباعة من تبويب المعاينة: إخفاء شريط الأدوات وإظهار الورقة فقط */
+  .preview-surface {
+    overflow: visible !important;
+    background: transparent !important;
+    border: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    min-height: 0 !important;
+  }
+
+  /* =========================================================
+     RTL Print Clipping Fix — معالجة قصّ النصوص لليسار في RTL
+     ---------------------------------------------------------
+     السبب: عند direction: rtl + overflow على حاوية الـ glass،
+     يمتد الفائض لإحداثيات سالبة فيقصّه محرّك Chromium.
+     الحل: تفكيك أي transform/overflow/clip في سلسلة الـ wrapper
+     وفرض direction: rtl + width تلقائي.
+     ========================================================= */
+  .preview-surface .docx-wrapper,
+  .docx-wrapper {
+    background: #fff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    overflow: visible !important;       /* يمنع قصّ الفائض السالب في RTL */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    transform: none !important;
+    filter: none !important;
+    zoom: 1 !important;
+    display: block !important;
+    width: auto !important;
+    max-width: none !important;
+    direction: rtl !important;
+  }
+  .preview-surface .docx-wrapper > section.docx,
+  .docx-wrapper > section.docx {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin: 0 auto !important;
+    overflow: visible !important;       /* لا قصّ على مستوى الصفحة */
+    direction: rtl !important;
+    page-break-after: always;
+    break-after: page;
+  }
+  .preview-surface .docx-wrapper > section.docx:last-child,
+  .docx-wrapper > section.docx:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  /* تفريغ هوامش الحاويات */
+  .app-root { max-width: none !important; margin: 0 !important; padding: 0 !important; }
+  .view--service { margin: 0 !important; padding: 0 !important; }
+  .svc-body { margin: 0 !important; padding: 0 !important; }
+  .sheet-scroll { overflow: visible !important; padding: 0 !important; }
+
+  /* ===== الورقة الرسمية A4 — هوامش طباعة احترافية ===== */
+  .sheet {
+    width: 210mm !important;
+    /* بلا min-height في الطباعة: المتصفّح يقطع الصفحات تلقائياً عند 297mm
+       حذف min-height يمنع توليد صفحات فارغة عند تجاوز المحتوى لحدّ الصفحة. */
+    min-height: 0 !important;
+    height: auto !important;
+    max-width: none !important;
+    margin: 0 auto !important;
+    /* هوامش متناسقة: 10mm من جميع الجهات لإطار متوازن */
+    padding: 10mm 10mm 10mm !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    /* تيبوغرافيا بوحدات نقطية للطباعة (10pt ≈ 13.3px @96dpi) */
+    font-size: 10pt !important;
+    line-height: 1.45 !important;
+    color: #000 !important;
+    font-family: var(--print-font) !important;
+    box-sizing: border-box !important;
+  }
+  .sheet * {
+    font-family: inherit !important;
+    box-sizing: border-box !important;
+    text-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+  .sheet input,
+  .sheet input::placeholder { color: #000 !important; -webkit-text-fill-color: #000 !important; }
+  /* أرقام بفواصل ثابتة في الحقول لاتزان أعمدة الجداول */
+  .sheet .inp { font-variant-numeric: tabular-nums !important; }
+
+  /* ===== فرض RTL صريح على حاويات التخطيط فقط =====
+     السبب: dir="rtl" attribute لا يُورَّث بثبات لعناصر position:absolute
+     أثناء الطباعة. نَفرضه على الحاويات الكبرى دون لمس الـinputs
+     (الـinputs تبقى dir="auto" لتعرض الأرقام LTR والعربي RTL تلقائياً). */
+  .sheet,
+  .sheet-scroll,
+  .sheet-letterhead,
+  .sheet-letterhead__text,
+  .sheet-head,
+  .sheet-head--smart,
+  .tbl,
+  .tbl > thead,
+  .tbl > tbody,
+  .tbl > thead > tr,
+  .tbl > tbody > tr,
+  .tbl > thead > tr > th,
+  .tbl > tbody > tr > td,
+  .block,
+  .block-title,
+  .checks,
+  .smart-flow,
+  .smart-pair,
+  .smart-section,
+  .smart-section__body {
+    direction: rtl !important;
+    unicode-bidi: embed !important;
+  }
+
+  /* ===== الترويسة الرسمية — مطابقة لنموذج Word الأصلي =====
+     الشعار في الزاوية البصرية اليسرى. نستخدم left:0 الفيزيائية صراحةً
+     (وليس inset-inline-end) لأن الخصائص المنطقية تنكسر على بعض محرّكات الطباعة
+     مع position:absolute → تنعكس وتذهب الشعار للجهة الخطأ. */
+  .sheet-letterhead {
+    position: relative !important;
+    display: block !important;
+    text-align: center !important;
+    min-height: 18mm !important;
+    /* padding: top right bottom left → 22mm يسار محجوزة للشعار، 5mm يمين هامش بسيط */
+    padding: 1mm 5mm 2mm 22mm !important;
+    margin-block-end: 3mm !important;
+    border-block-end: 1.2pt solid #000 !important;
+    box-sizing: border-box !important;
+  }
+  .sheet-logo {
+    position: absolute !important;
+    top: 1mm !important;
+    left: 1mm !important;     /* اليسار البصري الفيزيائي — مطابق للأصل */
+    right: auto !important;
+    inset-block-start: auto !important;
+    inset-inline-start: auto !important;
+    inset-inline-end: auto !important;
+    width: 18mm !important;
+    height: 18mm !important;
+    object-fit: contain !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    padding: 0 !important;
+  }
+  .sheet-letterhead__text {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 1mm !important;
+    min-height: 16mm !important;
+    text-align: center !important;
+  }
+  .lh-project {
+    font-weight: 700 !important;
+    font-size: 9.5pt !important;
+    line-height: 1.3 !important;
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+  }
+  .lh-org {
+    font-weight: 800 !important;
+    font-size: 11pt !important;
+    line-height: 1.3 !important;
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+    letter-spacing: .005em !important;
+  }
+
+  /* ===== الحقول — مطابقة موضع الشاشة عند الطباعة بالضبط =====
+     السبب الجذري للانزياح إلى الحافة اليمنى:
+       غياب width:100% يجعل الـinput ينكمش لحجم محتواه فيطفو على حافة الخلية
+       (في RTL الـstart = اليمين). الإصلاح: نضمن أن الـinput يملأ الخلية كاملةً
+       كما يحصل تماماً على الشاشة، ونترك الـdirection والـtext-align للسلوك
+       الافتراضي (الذي يتطابق مع الشاشة لأن dir="auto" يعمل بنفس الكيفية في
+       كلتا الحالتين). */
+  .inp {
+    width: 100% !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+    font: inherit !important;
+    min-height: 14pt !important;
+    padding: 1pt 2pt !important;
+  }
+  .inp:focus-visible { outline: 0 !important; background: transparent !important; }
+  .inp--err { background: transparent !important; outline: 0 !important; }
+  .err-msg { display: none !important; }
+
+  /* ===== إخفاء كامل لمؤشّرات الإلزامية على الطباعة =====
+     النموذج الورقي الرسمي لا يحوي نجمات/أشرطة — هذه عناصر شاشة فقط.
+     يجب أن تبقى الورقة المطبوعة مطابقة 100% لقالب Word الأصلي. */
+  .lbl--required::after,
+  .dt-label--required::after,
+  .smart-pair__lbl--required::after { content: "" !important; }
+  .inp--required,
+  .inp[aria-required="true"] { box-shadow: none !important; }
+
+  /* إخفاء حالات busy/spinner عند الطباعة (للأمان فقط — الأزرار محجوبة أصلاً) */
+  .btn[aria-busy="true"]::before, .btn.is-busy::before { content: none !important; }
+
+  /* ===== الجداول — حدود حادة وتوزيع متوازن للأعمدة ===== */
+  .tbl {
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    width: 100% !important;
+    margin: 0 0 3mm !important;
+  }
+  .tbl th, .tbl td {
+    border: 0.6pt solid #000 !important;
+    padding: 2.5pt 4pt !important;
+    vertical-align: middle !important;
+    word-wrap: break-word !important;
+    overflow-wrap: anywhere !important;
+  }
+  .lbl,
+  .tbl--matrix thead th,
+  .tbl--doctable th,
+  .tbl--checklist thead th,
+  .dt-label {
+    background: var(--shade) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .tbl--grid .lbl {
+    text-align: center !important;
+    vertical-align: middle !important;
+    font-weight: 700 !important;
+    font-size: 9pt !important;
+    line-height: 1.25 !important;
+    padding: 2pt 3pt !important;
+    word-break: keep-all !important;
+  }
+  .tbl--grid .fld {
+    text-align: start !important;
+    vertical-align: middle !important;
+    padding: 2pt 4pt !important;
+  }
+  /* ارتفاع موحّد للصفوف لمنع تباين بصري بين السطر الواحد والمتعدّد */
+  .tbl--grid td { min-height: 9mm !important; height: 9mm !important; }
+  .tbl--grid tr { min-height: 9mm !important; }
+  .tbl--head .cell-title,
+  .tbl--head .cell-formno,
+  .tbl--head .lbl { text-align: center !important; }
+  .tbl--head .cell-title { font-size: 13pt !important; font-weight: 800 !important; padding: 4pt 6pt !important; }
+  .tbl--head .cell-formno { font-size: 10.5pt !important; font-weight: 700 !important; padding: 4pt 6pt !important; }
+  .tbl--head .lbl { padding: 3pt 5pt !important; font-weight: 700 !important; }
+
+  /* خلية الحشو الفارغة في الشبكة — بلا تظليل لئلا تربك العين */
+  .fld--pad { border-color: #000 !important; background: #fff !important; padding: 0 !important; }
+
+  /* ===== price-chip أثناء الطباعة:
+     النموذج الورقي الرسمي لا يحوي شارة سعر؛ نخفيها كلياً للحفاظ على الهوية الرسمية.
+     السعر يبقى ظاهراً على الشاشة فقط كمعونة UX. ===== */
+  .price-chip { display: none !important; }
+  /* الخلية المخصصة لقيمة الرسوم تبقى بلا شارة، مع محاذاة وسطية للنص فقط */
+  .fld--fee { vertical-align: middle !important; text-align: start !important; }
+
+  /* ===== ملاحظات الحقول — تمييز التوجيه (أحمر) عن المعلومة (رمادي) ===== */
+  .fld-note {
+    display: block !important;
+    font-size: 7.5pt !important;
+    font-weight: 400 !important;
+    color: var(--rule-soft) !important;
+    -webkit-text-fill-color: var(--rule-soft) !important;
+    line-height: 1.35 !important;
+    margin-block-end: 1pt !important;
+  }
+  /* ملاحظة توجيهية (مثل: "يحتوي رقم النموذج ورقم المركز ورقم متسلسل") —
+     تُطبع باللون الأحمر كما في النموذج الأصلي (الورقي) لإبرازها للمستخدم */
+  .fld-note--guide {
+    color: var(--guide-red) !important;
+    -webkit-text-fill-color: var(--guide-red) !important;
+    font-weight: 700 !important;
+    font-size: 8pt !important;
+  }
+
+  /* ===== مصفوفة المستمسكات — إعادة ضبط للحدّة والمحاذاة ===== */
+  .tbl--matrix th, .tbl--matrix td {
+    text-align: center !important;
+    padding: 2pt 3pt !important;
+    font-size: 9pt !important;
+  }
+  .tbl--matrix thead th { font-size: 8.5pt !important; font-weight: 700 !important; }
+  .tbl--matrix tbody td.mtx-doc { text-align: start !important; font-size: 9pt !important; padding-inline-start: 5pt !important; }
+  .tbl--matrix tbody tr.is-shaded td { background: var(--shade-strong) !important; }
+  .mtx-cell--off { background: #fafafa !important; }
+  /* العمود العمودي للترويسة — ضمان عدم الاقتصاص */
+  .vtxt { font-size: 8pt !important; max-height: 18mm !important; line-height: 1.1 !important; }
+  /* ترويسة الجدول تتكرر تلقائياً عبر الصفحات */
+  .tbl--matrix thead,
+  .tbl--doctable thead,
+  .tbl--checklist thead { display: table-header-group !important; }
+  .tbl tbody { display: table-row-group !important; }
+
+  /* ===== جدول الوثائق ===== */
+  .tbl--doctable th { background: var(--shade) !important; text-align: center !important; font-size: 9pt !important; padding: 3pt 5pt !important; }
+  .tbl--doctable td { font-size: 9pt !important; padding: 3pt 5pt !important; }
+  .tbl--doctable tr.is-shaded td { background: #f7f7f7 !important; }
+  .tbl--doctable tr.is-shaded .dt-label { background: var(--shade) !important; }
+  .dt-label { font-weight: 700 !important; }
+
+  /* ===== قائمة المراجعة (checklist) ===== */
+  .tbl--checklist thead th { font-size: 9.5pt !important; }
+  .tbl--checklist tbody td.cl-desc { font-size: 9pt !important; }
+
+  /* ===== التواقيع — حدّة، توازن، خط توقيع واضح ===== */
+  .tbl--sign td {
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 9pt !important;
+    height: 14mm !important;
+    vertical-align: bottom !important;
+    padding: 1pt 4pt 2pt !important;
+    position: relative !important;
+  }
+  .tbl--sign td::before {
+    /* خط توقيع داخل الخلية — تماشياً مع ممارسات الوثائق الرسمية */
+    content: "" !important;
+    position: absolute !important;
+    inset-inline: 8pt !important;
+    inset-block-end: 5.5mm !important;
+    height: 0 !important;
+    border-block-end: 0.6pt dashed #000 !important;
+  }
+
+  /* ===== كتلة الملاحظات (شروحات/الأجراء) — احترافية في الطباعة ===== */
+  .block--note {
+    padding: 3pt 5pt !important;
+    background: #fff !important;
+    border: 0.6pt solid #000 !important;
+    border-radius: 0 !important;
+    font-size: 9.5pt !important;
+    min-height: 20mm !important;
+  }
+  .note-text { margin: 0 !important; line-height: 1.55 !important; }
+
+  /* ===== الإقرار القانوني ===== */
+  .block--legal {
+    border: 0.6pt solid #000 !important;
+    padding: 4pt 6pt !important;
+    margin-block-start: 3mm !important;
+  }
+  .block-title--legal { text-align: center !important; font-size: 11pt !important; font-weight: 800 !important; margin-block-end: 2mm !important; }
+  .legal-p { font-size: 9.5pt !important; line-height: 1.55 !important; margin: 0 0 2pt !important; text-align: justify !important; }
+  .legal-footer { font-size: 9.5pt !important; font-weight: 700 !important; margin-block-start: 4mm !important; }
+
+  /* ===== عناوين الكتل ===== */
+  .block { margin-block-end: 3mm !important; }
+  .block-title {
+    font-weight: 800 !important;
+    font-size: 10pt !important;
+    margin: 2mm 0 1.5mm !important;
+    padding: 1.5pt 4pt 1.5pt 6pt !important;
+    border-inline-start: 2.6pt solid #000 !important;
+    background: var(--shade) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* ===== الخيارات (checkboxes) — حدّة طباعة ===== */
+  .chk-item, .chk-item--box {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .chk-label, .chk-label--box {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4pt !important;
+  }
+  .chk-label--box { gap: 0 !important; }
+  .chk-box {
+    display: inline-block !important;
+    box-sizing: border-box !important;
+    width: 10pt !important;
+    height: 10pt !important;
+    min-width: 10pt !important;
+    min-height: 10pt !important;
+    border: 0.8pt solid #000 !important;
+    background: #fff !important;
+    position: relative !important;
+    vertical-align: middle !important;
+    flex: 0 0 10pt !important;
+  }
+  .chk-box::after {
+    content: "" !important;
+    display: block !important;
+    position: absolute !important;
+    inset: 1.5pt !important;
+    background: transparent !important;
+    transform: scale(0) !important;
+    transition: none !important;
+    width: auto !important;
+    height: auto !important;
+  }
+  .chk:checked + .chk-label .chk-box::after {
+    background: #000 !important;
+    transform: scale(1) !important;
+  }
+  .chk-text { font-size: 9pt !important; line-height: 1.3 !important; }
+  .checks { display: flex !important; flex-wrap: wrap !important; gap: 2pt 10pt !important; align-items: center !important; }
+  /* خلايا المصفوفة: توسيط مربع الاختيار */
+  .tbl--matrix td .chk-item--box { width: 100% !important; height: 100% !important; }
+
+  /* ===== انضباط فواصل الصفحات ===== */
+  /* الجداول الطويلة (المصفوفات، الوثائق، قائمة المراجعة) يُسمح لها بالانقسام
+     بشرط بقاء كل صف موحَّداً وإعادة طباعة ترويسة الجدول في الأعلى. */
+  .tbl--matrix,
+  .tbl--doctable,
+  .tbl--checklist { break-inside: auto; page-break-inside: auto; }
+
+  /* الشبكات الصغيرة والكتل القانونية لا تنقسم؛ التواقيع نسمح بضمّها بمرونة */
+  .block--legal,
+  .tbl--grid,
+  .tbl--head,
+  .tbl--routing { break-inside: avoid; page-break-inside: avoid; }
+  /* جدول التواقيع: مفضّل عدم القطع لكن السماح بذلك إذا لزم لإحكام التركيب */
+  .tbl--sign { break-inside: auto; page-break-inside: auto; }
+
+  /* ====== فصل صفحة الإقرار والتعهّد ======
+     قسم "إقرار وتعهّد والتزام" يجب أن يبدأ صفحة مستقلة (مطابقة للنموذج الورقي
+     الرسمي: الصفحة الأولى = البيانات + التوقيع، الصفحة الثانية = التعهّد).
+     هذا يمنع انضغاط بداية التعهّد في ذيل الصفحة الأولى. */
+  .block--legal {
+    break-before: page !important;
+    page-break-before: always !important;
+    /* هامش علوي مريح بعد فاصل الصفحة لإبراز عنوان التعهّد */
+    margin-block-start: 6mm !important;
+    padding-block-start: 4mm !important;
+  }
+  /* عنوان التعهّد يبقى ملتصقاً بنصّه (لا يُترك يتيماً في أعلى الصفحة) */
+  .block--legal .block-title--legal,
+  .block--legal .block-title { break-after: avoid !important; page-break-after: avoid !important; }
+  /* إذا جاء التعهّد قبل التواقيع (نادر) — اضمن بقاءهم سويّاً */
+  .block--legal + .tbl--sign { break-before: avoid !important; page-break-before: avoid !important; }
+
+  /* كل صف يبقى موحّداً (لا قطع منتصف صف) */
+  tr, td, th { break-inside: avoid; page-break-inside: avoid; }
+
+  /* ترويسات الجداول الطويلة تتكرّر على كل صفحة */
+  .tbl--matrix thead,
+  .tbl--doctable thead,
+  .tbl--checklist thead {
+    display: table-header-group !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .block-title { break-after: avoid; page-break-after: avoid; }
+  .sheet-letterhead { break-after: avoid; page-break-after: avoid; }
+  .sheet-head, .sheet-head--smart { break-after: avoid; page-break-after: avoid; }
+
+  /* الصورة الانسيابية إن طُبعت من لوحة الشرح */
+  .flow-img { max-width: 100% !important; border: 0 !important; }
+
+  /* ذيل الطباعة المخصّص ملغى — مطابقة للنموذج الأصلي بلا عناصر زائدة */
+  .sheet-print-foot { display: none !important; }
+
+  /* ===== النموذج الذكي — طباعة WYSIWYG محسّنة ===== */
+  body.print-form--smart .sheet--smart { font-size: 10pt !important; }
+  body.print-form--smart .smart-flow {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 2mm 4mm !important;
+  }
+  body.print-form--smart .smart-section,
+  body.print-form--smart .smart-titlebar,
+  body.print-form--smart .smart-subhead,
+  body.print-form--smart .smart-pair__fld {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    border-color: #000 !important;
+  }
+  body.print-form--smart .smart-section__title,
+  body.print-form--smart .smart-titlebar,
+  body.print-form--smart .smart-subhead {
+    background: var(--shade) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  body.print-form--smart .smart-pair__fld {
+    background: #fff !important;
+    min-height: 9mm !important;
+  }
+
+  /* ===== النموذج الأصلي — جدول رسمي صارم ===== */
+  body.print-form--original .sheet--original .tbl--grid .lbl { text-align: center !important; }
+
+  /* ===== عزل احترافي لطباعة النموذج (body.print-form) =====
+     نهج بسيط ومتين: نخفي كل ما عدا الورقة بـ display:none. */
+  body.print-form {
+    min-height: 0 !important;
+    height: auto !important;
+    background: #fff !important;
+    background-image: none !important;
+  }
+  body.print-form > :not(#app) { display: none !important; }
+  body.print-form #app {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    background: #fff !important;
+    background-image: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  body.print-form #app * { display: revert; }
+  /* أخفِ كل شيء داخل #app ما عدا المسار المؤدّي إلى ورقة النموذج */
+  body.print-form #app > *:not(.view--service) { display: none !important; }
+  body.print-form #app .view--service > *:not(.svc-body) { display: none !important; }
+  body.print-form #app .svc-body > *:not(.workspace):not(.ws-main):not(.sheet-scroll):not(#formSheet) { display: none !important; }
+  body.print-form #app .workspace > *:not(.ws-main):not(.sheet-scroll):not(#formSheet) { display: none !important; }
+  body.print-form #app .ws-main > *:not(.sheet-scroll):not(#formSheet):not(.form-stage) { display: none !important; }
+  body.print-form #app .form-stage > *:not(.sheet-scroll):not(#formSheet) { display: none !important; }
+  body.print-form #app .sheet-scroll > *:not(#formSheet) { display: none !important; }
+  body.print-form #app .view--service,
+  body.print-form #app .svc-body,
+  body.print-form #app .workspace,
+  body.print-form #app .ws-main,
+  body.print-form #app .form-stage,
+  body.print-form #app .sheet-scroll {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    overflow: visible !important;
+    transform: none !important;
+    filter: none !important;
+    max-width: none !important;
+    width: auto !important;
+  }
+  body.print-form #app #formSheet {
+    position: static !important;
+    display: block !important;
+    margin: 0 auto !important;
+  }
+  body.print-form #app #formSheet,
+  body.print-form #app #formSheet * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    animation: none !important;
+    transform: none !important;
+    border-radius: 0 !important;
+  }
+  body.print-form #app #formSheet::before,
+  body.print-form #app #formSheet::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* شعار مفرّغ — بلا مربع خلفية عند الطباعة */
+  body.print-form .sheet-logo,
+  #resolutionSheet .rsd-logo {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    padding: 0 !important;
+    object-fit: contain !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* عناصر ربط رقم النموذج بترويسة الورقة (محقَّن عبر data-attr) */
+  .sheet[data-form-no] .sheet-letterhead { /* استمرار: data-form-no يُقرأ في pseudo فوق */ }
+
+  /* ===== عزل طباعة المعاينة (body.print-preview) ===== */
+  body.print-preview {
+    min-height: 0 !important;
+    height: auto !important;
+    background: #fff !important;
+    background-image: none !important;
+  }
+  body.print-preview > :not(#app) { display: none !important; }
+  body.print-preview #app { visibility: hidden !important; padding: 0 !important; margin: 0 !important; max-width: none !important; }
+  body.print-preview #app .view--service,
+  body.print-preview #app .svc-body,
+  body.print-preview #app .preview,
+  body.print-preview #app .preview-surface,
+  body.print-preview #app .preview-surface .docx-wrapper,
+  body.print-preview #app .preview-surface .docx-wrapper * {
+    visibility: visible !important;
+  }
+  body.print-preview #app .preview-surface .docx-wrapper > section.docx {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* ===== Command Center: hide workspace shell, agent assist, notes, macros, SLA bar ===== */
+  .workspace { display: block !important; }
+  .ws-main { display: block !important; }
+
+  /* ===== PHASE 3 Print Isolation: strip all spatial / glass / motion ===== */
+  .spatial-depth,
+  .spatial-depth::after,
+  .ws-main.spatial-workspace-active::before {
+    box-shadow: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    animation: none !important;
+    transform: none !important;
+    background: transparent !important;
+  }
+  body.sla-urgent,
+  body.sla-vip,
+  body.sla-standard,
+  body.spatial-enabled {
+    background: #fff !important;
+  }
+}
+
+/* ============================================================
+   Resolution Document — Hyper-advanced Print Engine
+   Triggered by body.print-resolution. Transforms entire layout
+   into a clean, A4-sized contract with signature + timestamp.
+   ============================================================ */
+@media print {
+  body.print-resolution { background: #fff !important; }
+  body.print-resolution > *:not(#resolutionSheet) { display: none !important; }
+  body.print-resolution > #resolutionSheet { display: block !important; }
+}
+
+@media print {
+  #resolutionSheet,
+  #resolutionSheet * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-sizing: border-box !important;
+  }
+
+  #resolutionSheet {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    margin: 0 auto !important;
+    padding: 16mm 14mm 18mm !important;
+    font-family: 'Cairo','Tajawal','Arial','Liberation Sans',sans-serif !important;
+    color: #000 !important;
+    background: #fff !important;
+    direction: rtl !important;
+    line-height: 1.55 !important;
+    font-size: 10.5pt !important;
+  }
+
+  #resolutionSheet .rsd-head {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 14mm !important;
+    padding-block-end: 8px !important;
+    border-block-end: 2.5px solid #232350 !important;
+    margin-block-end: 12px !important;
+    position: relative !important;
+  }
+  #resolutionSheet .rsd-head::after {
+    content: "" !important;
+    position: absolute !important;
+    inset-block-end: -6px !important;
+    inset-inline: 0 !important;
+    height: 2px !important;
+    background: linear-gradient(90deg, #232350 0%, #c1121f 55%, #f4c430 100%) !important;
+  }
+  #resolutionSheet .rsd-brand { display: flex !important; align-items: center !important; gap: 10px !important; }
+  #resolutionSheet .rsd-logo { width: 18mm !important; height: 18mm !important; object-fit: contain !important; }
+  #resolutionSheet .rsd-brand__co { font-size: 13.5pt !important; font-weight: 800 !important; color: #232350 !important; -webkit-text-fill-color: #232350 !important; letter-spacing: -.005em !important; }
+  #resolutionSheet .rsd-brand__sec { font-size: 10.5pt !important; font-weight: 700 !important; color: #333 !important; -webkit-text-fill-color: #333 !important; }
+  #resolutionSheet .rsd-brand__org { font-size: 9pt !important; color: #666 !important; -webkit-text-fill-color: #666 !important; margin-block-start: 2px !important; }
+
+  #resolutionSheet .rsd-meta { text-align: end !important; display: flex !important; flex-direction: column !important; align-items: flex-end !important; gap: 5px !important; }
+  #resolutionSheet .rsd-doc-title { font-size: 13pt !important; font-weight: 800 !important; color: #232350 !important; -webkit-text-fill-color: #232350 !important; letter-spacing: .01em !important; }
+  #resolutionSheet .rsd-doc-sub { font-size: 8pt !important; color: #666 !important; -webkit-text-fill-color: #666 !important; letter-spacing: .04em !important; text-transform: uppercase !important; }
+  #resolutionSheet .rsd-sla { display: inline-block !important; padding: 3px 14px !important; border-radius: 999px !important; font-weight: 800 !important; font-size: 9.5pt !important; color: #fff !important; -webkit-text-fill-color: #fff !important; letter-spacing: .02em !important; }
+  #resolutionSheet .rsd-sla--urgent { background: #c1121f !important; }
+  #resolutionSheet .rsd-sla--standard { background: #1d4ed8 !important; }
+  #resolutionSheet .rsd-sla--vip { background: linear-gradient(135deg, #d4af37, #b8860b) !important; }
+  #resolutionSheet .rsd-ref { font-size: 10pt !important; }
+  #resolutionSheet .rsd-ref__lbl { color: #555 !important; -webkit-text-fill-color: #555 !important; margin-inline-end: 4px !important; }
+  #resolutionSheet .rsd-ref__val { font-family: 'Courier New', monospace !important; font-weight: 800 !important; color: #232350 !important; -webkit-text-fill-color: #232350 !important; }
+
+  #resolutionSheet .rsd-block { margin-block-start: 8px !important; page-break-inside: avoid !important; break-inside: avoid !important; }
+  #resolutionSheet .rsd-h {
+    margin: 0 0 5px !important;
+    padding: 5px 12px !important;
+    background: #f0f3f8 !important;
+    border-inline-start: 4px solid #232350 !important;
+    font-size: 11pt !important;
+    font-weight: 800 !important;
+    color: #232350 !important;
+    -webkit-text-fill-color: #232350 !important;
+  }
+  #resolutionSheet .rsd-tbl { width: 100% !important; border-collapse: collapse !important; }
+  #resolutionSheet .rsd-tbl th,
+  #resolutionSheet .rsd-tbl td { border: 1px solid #999 !important; padding: 5px 10px !important; font-size: 10pt !important; vertical-align: middle !important; text-align: start !important; }
+  #resolutionSheet .rsd-tbl__lbl { width: 30% !important; background: #fafbfd !important; font-weight: 700 !important; color: #333 !important; -webkit-text-fill-color: #333 !important; }
+  #resolutionSheet .rsd-tbl__val { font-weight: 600 !important; color: #000 !important; -webkit-text-fill-color: #000 !important; }
+
+  #resolutionSheet .rsd-block--notes .rsd-notes {
+    white-space: pre-wrap !important;
+    min-height: 22mm !important;
+    padding: 8px 10px !important;
+    border: 1px solid #999 !important;
+    line-height: 1.6 !important;
+    font-size: 10pt !important;
+    background: #fff !important;
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+  }
+
+  #resolutionSheet .rsd-block--legal .rsd-legal {
+    margin: 0 !important;
+    padding: 8px 12px !important;
+    background: #fcf7e6 !important;
+    border-inline-start: 3px solid #f4c430 !important;
+    font-size: 9.5pt !important;
+    line-height: 1.7 !important;
+    color: #333 !important;
+    -webkit-text-fill-color: #333 !important;
+  }
+
+  #resolutionSheet .rsd-sign {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 10mm !important;
+    margin-block-start: 14mm !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  #resolutionSheet .rsd-sign__col { display: flex !important; flex-direction: column !important; align-items: center !important; gap: 2px !important; }
+  #resolutionSheet .rsd-sign__col::before {
+    content: "" !important;
+    display: block !important;
+    width: 100% !important;
+    border-block-end: 1.4px solid #000 !important;
+    height: 18mm !important;
+    margin-block-end: 4px !important;
+  }
+  #resolutionSheet .rsd-sign__line { display: none !important; }
+  #resolutionSheet .rsd-sign__lbl { font-size: 10pt !important; font-weight: 800 !important; color: #000 !important; -webkit-text-fill-color: #000 !important; }
+  #resolutionSheet .rsd-sign__date { font-size: 8.5pt !important; color: #555 !important; -webkit-text-fill-color: #555 !important; margin-block-start: 4px !important; letter-spacing: .03em !important; }
+
+  #resolutionSheet .rsd-foot {
+    margin-block-start: 10mm !important;
+    padding-block-start: 6px !important;
+    border-block-start: 1px solid #999 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    font-size: 8.5pt !important;
+    color: #555 !important;
+    -webkit-text-fill-color: #555 !important;
+    position: relative !important;
+  }
+  #resolutionSheet .rsd-foot__id { font-family: 'Courier New', monospace !important; font-weight: 800 !important; color: #232350 !important; -webkit-text-fill-color: #232350 !important; }
+  #resolutionSheet .rsd-foot__co { font-weight: 700 !important; }
+  #resolutionSheet .rsd-foot::after {
+    content: "تاريخ الطباعة: " attr(data-timestamp) !important;
+    display: inline-block !important;
+    flex: 1 0 100% !important;
+    margin-block-start: 4px !important;
+    padding-block-start: 4px !important;
+    border-block-start: 1px dashed #ccc !important;
+    text-align: center !important;
+    font-size: 8.5pt !important;
+    color: #232350 !important;
+    -webkit-text-fill-color: #232350 !important;
+    font-weight: 800 !important;
+    letter-spacing: .02em !important;
+  }
+
+  /* ضمان عدم تقطيع الكتل بين الصفحات */
+  #resolutionSheet header,
+  #resolutionSheet section,
+  #resolutionSheet footer { page-break-inside: avoid !important; break-inside: avoid !important; }
+
+  /* =========================================================
+     PRINT HARDENING v4 — Chromium RTL Fix + Universal Defenses
+     ---------------------------------------------------------
+     • حيلة LTR على الجذر تمنع قصّ الإحداثيات السالبة في Chromium
+       عند الطباعة من سياق RTL. نُعيد RTL على الحاويات الفعلية للمحتوى.
+     • مسار النموذج المُختبَر (body.is-printing) محميّ بأولوية class أعلى،
+       فحيلة LTR لا تطبّق عليه.
+     • هوامش @page لا تُغيَّر هنا (margin: 0) لأن النموذج يعتمد padding
+       داخلي مضبوط على 10mm/12mm. تغييرها يكسر تخطيط A4.
+     ========================================================= */
+
+  /* 1) Chromium RTL clipping fix — جذر LTR لاحتساب الإحداثيات */
+  html, body:not(.is-printing):not(.print-form):not(.print-preview):not(.print-resolution) {
+    direction: ltr !important;
+  }
+  /* استعادة RTL على حاويات المحتوى الفعلية */
+  body:not(.is-printing) #app,
+  body:not(.is-printing) .view,
+  body:not(.is-printing) main,
+  body:not(.is-printing) .preview-surface {
+    direction: rtl !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    position: static !important;
+    float: none !important;
+  }
+
+  /* 2) إعادة تعيين الزجاج/الظلال — بأسماء الكلاسات الفعلية في المشروع
+        (المعادل لِ .glass-card / .form-section / .card في الاقتراح) */
+  .glass-panel,
+  .sec-card,
+  .svc-card,
+  .trust-card,
+  .guide-card,
+  .hero,
+  .svc-head,
+  .cmd-rail,
+  .cmd-dock,
+  .preview-surface {
+    background: #ffffff !important;
+    border-color: #ddd !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    color: #000000 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* 3) تبسيط شبكة Bento — تتحوّل لعمود واحد للطباعة العامة (غير النموذج) */
+  body:not(.is-printing) .sections--bento,
+  body:not(.is-printing) .grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  /* 4) قواعد فواصل صفحات شاملة — لا تكسير عناوين ولا فقرات/جداول */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+  p, tr, img, .svc-card, .sec-card, .trust-card, .guide-card {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  table { page-break-inside: auto; }
+  thead { display: table-header-group; }
+  tfoot { display: table-footer-group; }
+}

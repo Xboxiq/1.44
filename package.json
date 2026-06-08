@@ -1,0 +1,18 @@
+{
+  "name": "baghdad-electricity-forms",
+  "private": true,
+  "description": "نظام أتمتة نماذج خدمات المشتركين — كهرباء الرصافة",
+  "scripts": {
+    "serve": "python3 -m http.server 8000",
+    "check": "node --check assets/js/app.js && node --check assets/js/docxgen.js && python3 -c \"import json; json.load(open('data/services.json')); json.load(open('data/service_prices.json'))\"",
+    "sync:services": "python3 tools/sync_services_from_archive.py",
+    "skills:install": "skills add ./skills --agent cursor -y --copy",
+    "skills:list": "skills ls --json",
+    "skills:restore": "skills experimental_install -y",
+    "skills:update": "skills update -y"
+  },
+  "devDependencies": {
+    "node-unrar-js": "^2.0.2",
+    "skills": "^1.5.10"
+  }
+}
