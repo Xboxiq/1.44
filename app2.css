@@ -1,0 +1,239 @@
+/* ---------- Service cards ---------- */
+.svc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.svc {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  cursor: pointer;
+  box-shadow: var(--shadow-xs);
+  transition: transform var(--duration-base) var(--ease-elegant),
+              box-shadow var(--duration-base) var(--ease-elegant),
+              border-color var(--duration-base) var(--ease-elegant);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow: hidden;
+}
+.svc::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 3px;
+  background: var(--svc-color, var(--brand-navy));
+  opacity: 0.9;
+}
+.svc:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--svc-color, var(--brand-navy)) 40%, var(--border));
+}
+.svc__row1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.svc__code {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: var(--fw-extra);
+  letter-spacing: 0.06em;
+  color: var(--svc-color, var(--brand-navy));
+  background: color-mix(in srgb, var(--svc-color, var(--brand-navy)) 10%, transparent);
+  padding: 4px 9px;
+  border-radius: 6px;
+}
+.svc__pin {
+  color: var(--gray-400);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-elegant);
+}
+.svc__pin:hover, .svc__pin.is-on { color: var(--brand-gold); }
+.svc__title {
+  font-weight: var(--fw-bold);
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--text);
+}
+.svc__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+.svc__price {
+  font-family: var(--font-mono);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+.svc__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-inline-start: auto;
+  color: var(--svc-color, var(--brand-navy));
+  font-weight: var(--fw-bold);
+}
+
+/* ---------- Section bar (category strip) ---------- */
+.catbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+.cattab {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: var(--surface-2);
+  cursor: pointer;
+  font-weight: var(--fw-bold);
+  font-size: 0.88rem;
+  color: var(--text);
+  transition: all var(--duration-fast) var(--ease-elegant);
+}
+.cattab:hover { transform: translateY(-1px); border-color: var(--border-strong); }
+.cattab.is-active {
+  background: var(--cat-color, var(--brand-navy));
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--cat-color, var(--brand-navy)) 35%, transparent);
+}
+.cattab__count {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cat-color, var(--brand-navy)) 12%, transparent);
+  color: var(--cat-color, var(--brand-navy));
+  font-weight: var(--fw-extra);
+}
+.cattab.is-active .cattab__count {
+  background: rgba(255,255,255,0.22);
+  color: #fff;
+}
+
+/* ---------- KPI tiles ---------- */
+.kpi {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.kpi__ico {
+  position: absolute;
+  inset-inline-end: -10px;
+  inset-block-start: -10px;
+  width: 80px;
+  height: 80px;
+  display: grid;
+  place-items: center;
+  color: var(--kpi-color, var(--brand-navy));
+  opacity: 0.12;
+}
+.kpi__ico .material-symbols-outlined { font-size: 80px; }
+.kpi__label {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  font-weight: var(--fw-semibold);
+}
+.kpi__value {
+  font-family: var(--font-display);
+  font-weight: var(--fw-extra);
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.kpi__delta {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: var(--fw-bold);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.kpi__delta.up { color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); }
+.kpi__delta.dn { color: var(--err); background: color-mix(in srgb, var(--err) 12%, transparent); }
+
+/* ---------- Variation A: Dashboard departments grid ---------- */
+.deptcard {
+  position: relative;
+  border-radius: 18px;
+  padding: 22px;
+  color: #fff;
+  overflow: hidden;
+  background: var(--dept-color, var(--brand-navy));
+  cursor: pointer;
+  transition: transform var(--duration-base) var(--ease-elegant), box-shadow var(--duration-base) var(--ease-elegant);
+  box-shadow: var(--shadow-sm);
+  min-height: 175px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.deptcard:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.deptcard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(280px 180px at 100% 0%, rgba(255,255,255,0.22), transparent 60%),
+    radial-gradient(220px 140px at 0% 100%, rgba(0,0,0,0.22), transparent 60%);
+  pointer-events: none;
+}
+.deptcard > * { position: relative; }
+.deptcard__code {
+  font-family: var(--font-mono);
+  font-weight: var(--fw-extra);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  width: fit-content;
+}
+.deptcard__title {
+  font-weight: var(--fw-extra);
+  font-size: 1.3rem;
+  line-height: 1.3;
+  margin-top: 10px;
+}
+.deptcard__count {
+  font-family: var(--font-display);
+  font-weight: var(--fw-extra);
+  font-size: 2.6rem;
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.deptcard__count small { font-size: 0.92rem; opacity: 0.8; font-weight: var(--fw-medium); }

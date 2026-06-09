@@ -1,0 +1,785 @@
+/* =============================================================
+   UX layer v2 — iOS-flavored refinements
+   • Transparent logo (no white tile)
+   • Squircle cards + frosted glass + multi-layer depth
+   • Spring transitions + Apple-style polish
+   ============================================================= */
+
+/* ---------- Squircle radius vars (iOS-like continuous corners) ---------- */
+:root {
+  --sq-md: 22px;
+  --sq-lg: 28px;
+  --sq-xl: 32px;
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ---------- LOGO: remove the white container globally ---------- */
+.rs-topbar__mark,
+.rs-rail__mark {
+  background: transparent !important;
+  box-shadow: none !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+.rs-topbar__mark img,
+.rs-rail__mark img {
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18));
+}
+.rs-rail__mark {
+  width: 36px !important;
+  height: 36px !important;
+}
+
+/* ---------- iOS Hero: aurora mesh on deep navy ---------- */
+.hero {
+  padding: 30px 34px;
+  border-radius: var(--sq-xl);
+  background:
+    radial-gradient(900px 500px at 95% -15%, color-mix(in srgb, var(--brand-gold) 32%, transparent), transparent 55%),
+    radial-gradient(720px 420px at -8% 105%, color-mix(in srgb, var(--brand-red) 38%, transparent), transparent 55%),
+    radial-gradient(600px 320px at 50% 110%, color-mix(in srgb, var(--brand-navy-2) 55%, transparent), transparent 55%),
+    radial-gradient(400px 240px at 70% 50%, color-mix(in srgb, #5b3aff 14%, transparent), transparent 60%),
+    linear-gradient(180deg, #0f1631 0%, #14143a 70%, #1a1442 100%) !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.06) inset,
+    0 24px 60px -16px rgba(11,16,40,0.45),
+    0 6px 18px -6px rgba(11,16,40,0.30);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--brand-gold) 12%, transparent);
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 0%, rgba(255,255,255,0.06), transparent 50%),
+    repeating-linear-gradient(105deg, transparent 0 24px, rgba(255,255,255,0.018) 24px 26px);
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.hero__eyebrow {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 999px;
+  padding: 7px 14px;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.hero__stat {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  background: rgba(0,0,0,0.18);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: var(--sq-md);
+  padding: 0;
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+}
+.hero__stat .cell {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 14px 18px;
+  position: relative;
+}
+.hero__stat .cell + .cell::before {
+  content: "";
+  position: absolute;
+  inset-block: 18%;
+  inset-inline-start: 0;
+  width: 1px;
+  background: rgba(255,255,255,0.12);
+}
+.hero__stat .num { font-size: 1.55rem; letter-spacing: -0.02em; }
+.hero__stat .lbl { font-size: 0.72rem; }
+
+/* iOS-style hero buttons — clean solids, no gradient mud */
+.hero .rs-btn--primary {
+  background: linear-gradient(180deg, #ffffff, #f6f8fc) !important;
+  color: var(--brand-navy) !important;
+  border-radius: 999px;
+  font-weight: 800;
+  letter-spacing: -0.005em;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1),
+    0 10px 22px -6px rgba(0,0,0,0.28),
+    0 2px 4px rgba(0,0,0,0.12);
+  border: 0;
+  transition: transform 320ms var(--spring), box-shadow 320ms var(--ease-ios);
+}
+.hero .rs-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1),
+    0 18px 34px -6px rgba(0,0,0,0.36),
+    0 4px 6px rgba(0,0,0,0.14);
+}
+.hero .rs-btn--primary .kbd {
+  background: color-mix(in srgb, var(--brand-navy) 10%, transparent);
+  color: var(--brand-navy);
+  border-color: transparent;
+}
+.hero .rs-btn:not(.rs-btn--primary) {
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.22);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-radius: 999px;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+}
+.hero .rs-btn:not(.rs-btn--primary):hover {
+  background: rgba(255,255,255,0.18);
+  transform: translateY(-1px);
+}
+
+/* ---------- Global primary button — solid, no gradient mud ---------- */
+.rs-btn--primary {
+  background: var(--brand-navy) !important;
+  border: 0;
+  box-shadow:
+    0 8px 22px -8px color-mix(in srgb, var(--brand-navy) 55%, transparent),
+    inset 0 1px 0 rgba(255,255,255,0.18);
+  transition: transform 320ms var(--spring), filter 200ms var(--ease-ios), box-shadow 280ms var(--ease-ios);
+}
+.rs-btn--primary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow:
+    0 14px 30px -8px color-mix(in srgb, var(--brand-navy) 70%, transparent),
+    inset 0 1px 0 rgba(255,255,255,0.22);
+}
+
+/* Danger / SOS treatment — same approach */
+.rs-btn--danger {
+  background: var(--brand-red) !important;
+  box-shadow:
+    0 8px 22px -8px color-mix(in srgb, var(--brand-red) 60%, transparent),
+    inset 0 1px 0 rgba(255,255,255,0.22);
+}
+
+/* ---------- Sections — iOS card group ---------- */
+.section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--sq-lg);
+  padding: 22px;
+  box-shadow:
+    0 1px 2px rgba(11,37,69,0.04),
+    0 12px 32px -16px rgba(11,37,69,0.16);
+  position: relative;
+}
+.section__title { font-size: 1.02rem; letter-spacing: -0.01em; }
+.section__title .material-symbols-outlined {
+  width: 32px; height: 32px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--brand-navy);
+}
+
+/* ---------- "Up Next" — iOS notification stack vibe ---------- */
+.upnext {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--brand-navy) 5%, var(--surface)),
+    var(--surface));
+  border: 1px solid color-mix(in srgb, var(--brand-navy) 18%, var(--border));
+}
+
+.taskrow {
+  display: grid;
+  grid-template-columns: 44px 1fr auto auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: transform 360ms var(--spring),
+              box-shadow 280ms var(--ease-ios),
+              border-color 200ms var(--ease-ios);
+  position: relative;
+  overflow: hidden;
+}
+.taskrow::before {
+  content: "";
+  position: absolute;
+  inset-block: 14px;
+  inset-inline-start: 0;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--task-color, var(--brand-navy));
+  opacity: 0;
+  transition: opacity 200ms var(--ease-ios);
+}
+.taskrow + .taskrow { margin-top: 10px; }
+.taskrow:hover {
+  transform: translateY(-2px) scale(1.005);
+  box-shadow:
+    0 4px 0 -2px var(--surface),
+    0 16px 32px -10px color-mix(in srgb, var(--task-color, var(--brand-navy)) 30%, transparent);
+  border-color: color-mix(in srgb, var(--task-color, var(--brand-navy)) 40%, var(--border));
+}
+.taskrow:hover::before { opacity: 1; }
+.taskrow__ico {
+  width: 44px; height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--task-color, var(--brand-navy)) 18%, transparent),
+    color-mix(in srgb, var(--task-color, var(--brand-navy)) 8%, transparent));
+  color: var(--task-color, var(--brand-navy));
+  display: grid; place-items: center;
+  flex: none;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--task-color, var(--brand-navy)) 18%, transparent);
+}
+.taskrow__t { font-weight: 700; font-size: 0.95rem; letter-spacing: -0.005em; }
+.taskrow__cta {
+  background: var(--task-color, var(--brand-navy));
+  color: #fff;
+  border: 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.78rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font);
+  transition: transform 280ms var(--spring), filter 200ms var(--ease-ios);
+}
+.taskrow__cta:hover { transform: translateY(-1px); filter: brightness(1.06); }
+
+/* SLA pill — iOS-style */
+.sladot {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ok) 14%, transparent);
+  color: var(--ok);
+}
+.sladot::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 0 currentColor;
+  animation: dot-pulse 2s ease-out infinite;
+}
+@keyframes dot-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 60%, transparent); }
+  70% { box-shadow: 0 0 0 6px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.sladot.warn { background: color-mix(in srgb, var(--warn) 14%, transparent); color: var(--warn); }
+.sladot.crit { background: color-mix(in srgb, var(--err) 14%, transparent); color: var(--err); }
+
+/* ---------- Quick Start — iOS home-screen squircle grid ---------- */
+.quickgrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px 14px;
+}
+@media (max-width: 780px) { .quickgrid { grid-template-columns: repeat(2, 1fr); } }
+.quick {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 360ms var(--spring);
+}
+.quick:hover { transform: translateY(-3px); }
+.quick:hover .quick__ico {
+  transform: scale(1.04);
+  box-shadow:
+    0 18px 30px -12px color-mix(in srgb, var(--q-color, var(--brand-navy)) 60%, transparent),
+    inset 0 1px 0 rgba(255,255,255,0.45);
+}
+.quick__ico {
+  width: 56px; height: 56px;
+  border-radius: 18px; /* squircle look */
+  display: grid; place-items: center;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--q-color, var(--brand-navy)) 95%, #fff),
+    color-mix(in srgb, var(--q-color, var(--brand-navy)) 70%, #000));
+  color: #fff;
+  box-shadow:
+    0 8px 22px -8px color-mix(in srgb, var(--q-color, var(--brand-navy)) 50%, transparent),
+    inset 0 1px 0 rgba(255,255,255,0.35);
+  flex: none;
+  transition: transform 360ms var(--spring), box-shadow 280ms var(--ease-ios);
+  position: relative;
+  overflow: hidden;
+}
+.quick__ico::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.22), transparent);
+  pointer-events: none;
+}
+.quick__ico .material-symbols-outlined { font-size: 26px; --rs-icon-fill: 0; }
+.quick__main { text-align: center; min-width: 0; width: 100%; }
+.quick__t {
+  font-weight: 700;
+  font-size: 0.84rem;
+  line-height: 1.3;
+  color: var(--text);
+  letter-spacing: -0.005em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.quick__s {
+  font-size: 0.7rem;
+  color: var(--text-soft);
+  margin-top: 2px;
+  font-family: var(--font-mono);
+}
+
+/* ---------- Departments — iOS settings group ---------- */
+.deptlist {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(11,37,69,0.04),
+    0 12px 28px -16px rgba(11,37,69,0.16);
+}
+.deptlist__row {
+  display: grid;
+  grid-template-columns: 38px 1fr auto auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: background 200ms var(--ease-ios);
+  position: relative;
+}
+.deptlist__row + .deptlist__row::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 70px;
+  inset-inline-end: 18px;
+  inset-block-start: 0;
+  height: 1px;
+  background: var(--border);
+}
+.deptlist__row:hover { background: var(--surface-2); }
+.deptlist__row:active { background: color-mix(in srgb, var(--d-color, var(--brand-navy)) 8%, transparent); }
+.deptlist__ico {
+  width: 36px; height: 36px;
+  border-radius: 11px;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--d-color, var(--brand-navy)) 95%, #fff),
+    color-mix(in srgb, var(--d-color, var(--brand-navy)) 75%, #000));
+  color: #fff;
+  display: grid; place-items: center;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
+  flex: none;
+}
+.deptlist__t {
+  font-weight: 700;
+  font-size: 0.94rem;
+  letter-spacing: -0.005em;
+  color: var(--text);
+}
+.deptlist__s {
+  font-size: 0.76rem;
+  color: var(--text-soft);
+  margin-top: 1px;
+}
+.deptlist__count {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.78rem;
+  color: var(--d-color, var(--brand-navy));
+  background: color-mix(in srgb, var(--d-color, var(--brand-navy)) 10%, transparent);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.deptlist__chev { color: var(--text-soft); }
+
+/* ---------- Topbar polish ---------- */
+.rs-topbar {
+  border-radius: 18px;
+}
+.rs-topbar__status { display: none; }
+
+/* iOS-flavored search button */
+.rs-search {
+  border-radius: 12px !important;
+  background: var(--surface-2) !important;
+  transition: background 200ms var(--ease-ios), border-color 200ms var(--ease-ios);
+}
+.rs-search:hover {
+  background: var(--surface-3) !important;
+}
+
+/* ---------- App rail — premium iOS sidebar ---------- */
+.rs-rail {
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--brand-navy-3) 96%, transparent) 0%,
+      color-mix(in srgb, var(--brand-navy) 94%, transparent) 100%);
+  border: 1px solid color-mix(in srgb, var(--brand-gold) 12%, transparent);
+  box-shadow:
+    0 26px 60px -20px rgba(15,22,49,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.86);
+  padding: 18px 12px;
+}
+.rs-rail__brand {
+  border-bottom-color: rgba(255,255,255,0.08) !important;
+}
+.rs-rail__text strong { color: #fff; }
+.rs-rail__text small { color: rgba(255,255,255,0.55); }
+.rs-rail__nav { gap: 4px; }
+.rs-rail__link {
+  border-radius: 14px;
+  color: rgba(255,255,255,0.72);
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  padding: 11px 12px;
+  position: relative;
+  transition: background 220ms var(--ease-ios),
+              color 220ms var(--ease-ios),
+              transform 360ms var(--spring);
+}
+.rs-rail__link .material-symbols-outlined {
+  color: rgba(255,255,255,0.7);
+  transition: color 200ms var(--ease-ios), transform 360ms var(--spring);
+}
+.rs-rail__link:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.06);
+  transform: translateX(-2px);
+}
+.rs-rail__link:hover .material-symbols-outlined { color: #fff; transform: scale(1.06); }
+.rs-rail__link.is-active {
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0.14),
+    rgba(255,255,255,0.06));
+  color: #fff;
+  box-shadow:
+    0 6px 18px -8px rgba(0,0,0,0.45),
+    inset 0 0 0 1px rgba(255,255,255,0.16),
+    inset 0 1px 0 rgba(255,255,255,0.20);
+}
+.rs-rail__link.is-active::before {
+  content: "";
+  position: absolute;
+  inset-block: 12px;
+  inset-inline-end: -10px;
+  width: 4px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--brand-gold), var(--brand-red));
+  box-shadow: 0 0 12px color-mix(in srgb, var(--brand-gold) 60%, transparent);
+}
+.rs-rail__link.is-active .material-symbols-outlined { color: var(--brand-gold); }
+.rs-rail__sos {
+  background: linear-gradient(180deg, var(--brand-red-2), var(--brand-red));
+  color: #fff;
+  border: 1px solid color-mix(in srgb, var(--brand-red) 65%, #fff);
+  border-radius: 14px;
+  box-shadow:
+    0 14px 28px -10px color-mix(in srgb, var(--brand-red) 70%, transparent),
+    inset 0 1px 0 rgba(255,255,255,0.25);
+  padding: 12px;
+  font-weight: 800;
+  position: relative;
+  overflow: hidden;
+  transition: transform 360ms var(--spring);
+}
+.rs-rail__sos:hover { transform: translateY(-2px) scale(1.02); }
+.rs-rail__sos::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.28) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: rail-sos-sweep 3.4s var(--ease-elegant) infinite;
+  pointer-events: none;
+}
+@keyframes rail-sos-sweep { 50%, 100% { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) { .rs-rail__sos::after { animation: none; } }
+
+/* ---------- Crumbs ---------- */
+.rs-crumbs {
+  background: var(--surface);
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  width: fit-content;
+}
+
+/* ---------- Tabbar (cases) ---------- */
+.tabbar {
+  border-radius: 14px;
+  padding: 5px;
+}
+.tabbtn {
+  border-radius: 10px;
+  transition: background 200ms var(--ease-ios), transform 280ms var(--spring);
+}
+.tabbtn:hover { transform: translateY(-1px); }
+.tabbtn.is-on {
+  box-shadow:
+    0 1px 2px rgba(11,37,69,0.10),
+    0 4px 10px -3px rgba(11,37,69,0.12);
+}
+
+/* ---------- "Today widget" — iOS-style condensed cards ---------- */
+.tdwidget {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 18px 20px;
+  box-shadow:
+    0 1px 2px rgba(11,37,69,0.04),
+    0 10px 24px -16px rgba(11,37,69,0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.tdwidget__icon {
+  width: 36px; height: 36px;
+  border-radius: 11px;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--tw-color, var(--brand-gold)) 92%, #fff),
+    color-mix(in srgb, var(--tw-color, var(--brand-gold)) 70%, #000));
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
+}
+.tdwidget__title {
+  font-weight: 800;
+  font-size: 0.92rem;
+  letter-spacing: -0.005em;
+}
+.tdwidget__body {
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ---------- Section header refinement on cards ---------- */
+.section__head {
+  margin-bottom: 16px;
+}
+
+/* Remove the inherited overlay from app.css so our aurora shows clean */
+.hero::before { display: none; }
+
+/* ---------- Workfocus grid ---------- */
+.workfocus { gap: 22px; }
+
+/* ---------- KBD chip refinement ---------- */
+.kbd {
+  border-radius: 6px;
+}
+
+/* Smooth scroll for any internal nav */
+html { scroll-behavior: smooth; }
+
+/* ---------- Force iOS-style focus ring ---------- */
+button:focus-visible, a:focus-visible, input:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-navy) 35%, transparent);
+}
+
+/* =============================================================
+   DASHBOARD RHYTHM — bento + smoother arrangement
+   ============================================================= */
+.app-page { gap: 22px; }
+.workfocus { gap: 22px; }
+.workfocus > .stack { gap: 18px; }
+
+/* Make hero text breathe more */
+.hero__title {
+  font-size: clamp(1.55rem, 2.4vw, 1.95rem);
+  margin: 12px 0 6px;
+  letter-spacing: -0.015em;
+  line-height: 1.18;
+}
+.hero__sub {
+  font-size: 0.96rem;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.78);
+}
+.hero__sub strong { color: #fff; font-weight: 800; }
+
+/* Hero stat refinements — Dynamic Island feel */
+.hero__stat {
+  background: rgba(0,0,0,0.30);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--sq-md);
+}
+.hero__stat .num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  background: linear-gradient(180deg, #fff, color-mix(in srgb, #fff 78%, var(--brand-gold)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- Section consistency ---------- */
+.section {
+  background: var(--surface);
+  border-radius: var(--sq-lg);
+}
+
+/* Tighten section padding for denser cards */
+.upnext { padding: 22px 22px 18px; }
+
+/* Slightly tighter taskrow group */
+.taskrow {
+  border-radius: 16px;
+  padding: 13px 14px;
+}
+.taskrow + .taskrow { margin-top: 8px; }
+
+/* Up Next header gets a count badge inline */
+.upnext .section__head h3 small {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-inline-start: 8px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--brand-navy) 12%, transparent);
+  color: var(--brand-navy);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+/* ---------- Quick grid: tighter tile spacing ---------- */
+.quickgrid {
+  gap: 14px 12px;
+  padding: 6px 0 4px;
+}
+.quick__t { font-size: 0.82rem; max-width: 110px; margin: 0 auto; }
+
+/* ---------- Today widget: more breathing ---------- */
+.tdwidget {
+  padding: 20px 22px;
+  gap: 12px;
+}
+.tdwidget__body { font-size: 0.9rem; line-height: 1.7; }
+
+/* ---------- Deptlist refinement ---------- */
+.deptlist {
+  border-radius: var(--sq-md);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+.deptlist__row {
+  padding: 13px 16px;
+  background: transparent;
+}
+.deptlist__row:hover { background: var(--surface); }
+
+/* Right column outer wrapper — softer card */
+.workfocus > .stack:last-child .section {
+  padding: 18px 20px;
+}
+
+/* ---------- iOS pulse for "matched" actions on the rail ---------- */
+.rs-rail__link.is-active .rs-rail__link-lbl {
+  font-weight: 800;
+}
+
+/* ---------- Subtle border highlight on hover (cards) ---------- */
+.section,
+.tdwidget,
+.deptlist {
+  transition: border-color 200ms var(--ease-ios), box-shadow 200ms var(--ease-ios);
+}
+.section:hover,
+.tdwidget:hover {
+  border-color: color-mix(in srgb, var(--brand-navy) 14%, var(--border));
+}
+
+/* ---------- App canvas — softer ambient ---------- */
+.app-shell {
+  background-image:
+    radial-gradient(900px 480px at 100% -10%, color-mix(in srgb, var(--brand-red) 6%, transparent), transparent 60%),
+    radial-gradient(900px 480px at 0% 0%, color-mix(in srgb, var(--brand-navy) 9%, transparent), transparent 60%),
+    radial-gradient(700px 360px at 60% 100%, color-mix(in srgb, var(--brand-gold) 5%, transparent), transparent 60%);
+}
+
+/* ---------- Topbar polish ---------- */
+.rs-topbar {
+  border-radius: 18px;
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 2px rgba(11,37,69,0.04), 0 10px 26px -16px rgba(11,37,69,0.12);
+}
+.rs-topbar__text strong { letter-spacing: -0.01em; }
+
+/* Topbar search button — refined iOS look */
+.rs-search {
+  border-radius: 12px !important;
+  background: var(--surface-2) !important;
+  border: 1.5px solid var(--border) !important;
+  transition: background 200ms var(--ease-ios),
+              border-color 200ms var(--ease-ios),
+              transform 320ms var(--spring);
+}
+.rs-search:hover {
+  border-color: color-mix(in srgb, var(--brand-navy) 24%, var(--border)) !important;
+  transform: translateY(-1px);
+}
+
+/* Topbar icon buttons — softer */
+.rs-iconbtn {
+  background: var(--surface-2);
+  border-radius: 10px;
+  border: 0;
+  transition: background 200ms var(--ease-ios), transform 280ms var(--spring);
+}
+.rs-iconbtn:hover {
+  background: var(--surface-3);
+  transform: translateY(-1px);
+}
+
+/* User avatar in topbar — refined glow */
+.rs-topbar > span:last-child > span:first-child {
+  box-shadow:
+    0 6px 14px -6px color-mix(in srgb, var(--brand-red) 50%, transparent),
+    inset 0 1px 0 rgba(255,255,255,0.22) !important;
+}

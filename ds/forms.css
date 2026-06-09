@@ -1,0 +1,143 @@
+/* ============================================================
+   Form components — text inputs, search inputs, textareas, labels
+   ============================================================ */
+
+/* ---------- Input ---------- */
+.rs-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-cmd);
+  font-size: 0.96rem;
+  background: var(--surface);
+  color: var(--text);
+  line-height: 1.4;
+  transition: border-color var(--duration-fast) var(--ease-elegant),
+              box-shadow var(--duration-fast) var(--ease-elegant),
+              background var(--duration-fast) var(--ease-elegant);
+}
+.rs-input::placeholder { color: var(--gray-400); }
+.rs-input:hover:not([readonly]):not(:disabled) {
+  border-color: color-mix(in srgb, var(--brand-navy) 30%, var(--border));
+}
+.rs-input:focus-visible {
+  outline: none;
+  border-color: var(--brand-red);
+  box-shadow: var(--ring);
+  background: color-mix(in srgb, var(--blue-50) 50%, var(--surface));
+}
+.rs-input[aria-invalid="true"] {
+  border-color: var(--err);
+  background: color-mix(in srgb, var(--err) 6%, var(--surface));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--err) 14%, transparent);
+}
+.rs-input:disabled,
+.rs-input[readonly] {
+  background: var(--surface-2);
+  color: var(--text-soft);
+  cursor: not-allowed;
+}
+
+/* ---------- Field (label + control + hint + error) ---------- */
+.rs-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.rs-field__lbl {
+  font-family: var(--font-cmd);
+  font-weight: var(--fw-bold);
+  font-size: 0.82rem;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.rs-field__lbl-required::after {
+  content: "*";
+  color: var(--brand-red);
+  font-weight: var(--fw-extra);
+}
+.rs-field__hint {
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  line-height: 1.4;
+}
+.rs-field__err {
+  font-size: 0.78rem;
+  color: var(--err);
+  font-weight: var(--fw-bold);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.4;
+}
+.rs-field__err::before { content: "⚠"; }
+
+/* ---------- SearchInput (icon + input, used in hero + topbar) ---------- */
+.rs-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.rs-search__input {
+  width: 100%;
+  padding-block: 14px;
+  padding-inline-start: 48px;
+  padding-inline-end: 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-cmd);
+  font-size: 1rem;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-xs);
+  transition: border-color var(--duration-fast) var(--ease-elegant),
+              box-shadow var(--duration-fast) var(--ease-elegant);
+}
+.rs-search__input::placeholder { color: var(--gray-400); }
+.rs-search__input:focus-visible {
+  outline: none;
+  border-color: var(--brand-red);
+  box-shadow: var(--ring);
+}
+.rs-search__ico {
+  position: absolute;
+  inset-inline-start: 16px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--gray-400);
+  pointer-events: none;
+  transition: color var(--duration-fast) var(--ease-elegant);
+}
+.rs-search:focus-within .rs-search__ico { color: var(--brand-red); }
+.rs-search--hero .rs-search__input {
+  padding-block: 17px;
+  font-size: 1.05rem;
+  border-color: color-mix(in srgb, var(--brand-navy) 22%, var(--border));
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---------- Textarea (notes area) ---------- */
+.rs-textarea {
+  width: 100%;
+  min-height: 130px;
+  resize: vertical;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-family: var(--font-cmd);
+  font-weight: var(--fw-medium);
+  font-size: 0.96rem;
+  background: var(--surface);
+  color: var(--text);
+  line-height: 1.7;
+  transition: border-color var(--duration-fast) var(--ease-elegant),
+              box-shadow var(--duration-fast) var(--ease-elegant);
+}
+.rs-textarea:focus-visible {
+  outline: none;
+  border-color: var(--brand-red);
+  box-shadow: var(--ring);
+}

@@ -1,0 +1,58 @@
+/* ============================================================
+   Base — Rasafa Service Hub
+   ----------------------------------------------------
+   Minimal global reset + body typography defaults so that
+   any page that links styles.css starts with sensible
+   Arabic-first defaults and the soft aurora background.
+
+   This is the only file in the token closure that paints
+   actual rules; everything else is `:root` custom properties.
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-cmd);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  color: var(--text);
+  background: var(--bg);
+  background-image:
+    radial-gradient(1200px 520px at 100% -10%,
+      color-mix(in srgb, var(--brand-red) 6%, transparent), transparent 60%),
+    radial-gradient(1200px 520px at 0% -10%,
+      color-mix(in srgb, var(--brand-navy) 8%, transparent), transparent 60%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
+}
+
+/* RTL is the default for this brand; consumers can flip via
+   <html dir="ltr"> on a per-page basis. */
+html:not([dir]),
+html[dir="rtl"] { direction: rtl; }
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+
+::selection {
+  background: color-mix(in srgb, var(--brand-red) 24%, transparent);
+}
+
+/* Honor reduced motion globally — components can opt-out
+   on a per-rule basis with their own media query. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration:  0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

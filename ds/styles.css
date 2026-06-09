@@ -1,0 +1,12 @@
+/* Design system entry */
+@import url("./tokens/fonts.css");
+@import url("./tokens/colors.css");
+@import url("./tokens/typography.css");
+@import url("./tokens/spacing.css");
+@import url("./tokens/shadows.css");
+@import url("./tokens/glass.css");
+@import url("./tokens/motion.css");
+@import url("./tokens/base.css");
+@import url("./core.css");
+@import url("./navigation.css");
+@import url("./forms.css");

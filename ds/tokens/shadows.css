@@ -1,0 +1,47 @@
+/* ============================================================
+   Shadows & Focus Rings — Rasafa Service Hub
+   ----------------------------------------------------
+   Shadows are tinted with the brand navy (rgba 11,37,69) so
+   even neutral cards feel like they belong to the system.
+   Five elevation steps from a hairline (xs) to a hero lift
+   (lg), plus two focus rings (crimson for primary actions
+   and navy for secondary navigation).
+
+   Dark-mode redefines all five steps with deeper alphas
+   against a near-black canvas.
+   ============================================================ */
+
+:root {
+  /* ---------- Elevation (light) ---------- */
+  --shadow-xs: 0 1px 2px rgba(11, 37, 69, .05);
+  --shadow-sm: 0 1px 2px rgba(11, 37, 69, .06),
+               0 2px 6px rgba(11, 37, 69, .06);
+  --shadow:    0 6px 18px rgba(11, 37, 69, .09),
+               0 2px 6px  rgba(11, 37, 69, .06);
+  --shadow-md: 0 12px 30px rgba(11, 37, 69, .12),
+               0 4px 10px  rgba(11, 37, 69, .07);
+  --shadow-lg: 0 22px 50px rgba(11, 37, 69, .18),
+               0 8px 18px  rgba(11, 37, 69, .10);
+
+  /* ---------- Focus rings ---------- */
+  --ring:        0 0 0 4px color-mix(in srgb, var(--brand-red)  22%, transparent);
+  --ring-navy:   0 0 0 4px color-mix(in srgb, var(--brand-navy) 32%, transparent);
+  --ring-gold:   0 0 0 3px var(--brand-gold);
+
+  /* ---------- Brand glows (for "command" surfaces) ---------- */
+  --glow-crimson: 0 0 24px color-mix(in srgb, var(--brand-red)  28%, transparent);
+  --glow-navy:    0 0 24px color-mix(in srgb, var(--brand-navy) 32%, transparent);
+  --glow-gold:    0 0 24px color-mix(in srgb, var(--brand-gold) 35%, transparent);
+}
+
+body.dark {
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, .40);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, .40);
+  --shadow:    0 8px 24px rgba(0, 0, 0, .45),
+               0 2px 8px  rgba(0, 0, 0, .35);
+  --shadow-md: 0 14px 34px rgba(0, 0, 0, .50);
+  --shadow-lg: 0 24px 54px rgba(0, 0, 0, .60);
+
+  --ring:      0 0 0 4px color-mix(in srgb, var(--brand-red)  38%, transparent);
+  --ring-navy: 0 0 0 4px color-mix(in srgb, #6f8cff 38%, transparent);
+}

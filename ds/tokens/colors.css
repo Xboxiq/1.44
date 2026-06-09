@@ -1,0 +1,97 @@
+/* ============================================================
+   Colors — Rasafa Service Hub
+   ----------------------------------------------------
+   The palette is extracted from the Tadfuq Al-Khayr logo
+   (deep navy outer ring + crimson "TEC" wordmark) and the
+   accompanying brand sweep (navy → red → gold).
+
+   Layer order:
+     1. Brand primitives  (--brand-*)        — the identity
+     2. Neutrals          (--gray-* / line)  — surfaces & text
+     3. Section colors    (--c-CS|CB|CT|CA)  — four departments
+     4. Semantic state    (--ok / warn / err / info)
+     5. Surface aliases   (--bg / --text / --border / etc)
+   ============================================================ */
+
+:root {
+  /* ---------- Brand primitives — Tadfuq Al-Khayr ---------- */
+  --brand-navy:        #232350;
+  --brand-navy-2:      #2e2e6b;   /* lighter navy for gradients */
+  --brand-navy-3:      #15153a;   /* deepest navy for shadows  */
+  --brand-red:         #c1121f;   /* primary crimson           */
+  --brand-red-2:       #e0313c;   /* hot crimson highlight     */
+  --brand-gold:        #f4c430;   /* ceremonial gold accent    */
+
+  /* Signature gradients & lines */
+  --brand-grad:        linear-gradient(120deg, var(--brand-navy-3) 0%, var(--brand-navy) 45%, var(--brand-red) 130%);
+  --brand-grad-soft:   linear-gradient(120deg,
+                          color-mix(in srgb, var(--brand-navy) 12%, transparent),
+                          color-mix(in srgb, var(--brand-red) 12%, transparent));
+  --brand-line:        linear-gradient(90deg, var(--brand-navy), var(--brand-red));
+  --brand-sweep:       linear-gradient(90deg, var(--brand-navy), var(--brand-red) 55%, var(--brand-gold));
+
+  /* ---------- Supporting navies & blues (form chrome) ---------- */
+  --navy-900: #0b2545;
+  --navy-800: #13315c;
+  --navy-700: #1b3b6f;
+  --blue-600: #1d4ed8;
+  --blue-500: #2563eb;
+  --blue-400: #3b82f6;
+  --blue-50:  #eff4ff;
+  --teal-500: #0e7490;
+
+  /* ---------- Neutrals (light) ---------- */
+  --gray-50:  #f7f9fc;
+  --gray-100: #eef2f7;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --gray-900: #0f172a;
+
+  /* ---------- Department colors (CS/CB/CT/CA) ----------
+     These four section colors map 1:1 to the four
+     departments and must be used consistently for any
+     pill, badge, or chart slice representing a section. */
+  --c-CS: #1d4ed8;  /* Subscriptions — blue   */
+  --c-CB: #0e7490;  /* Finance & billing — teal */
+  --c-CT: #b45309;  /* Technical — amber  */
+  --c-CA: #b91c1c;  /* Reports & complaints — red */
+
+  /* ---------- Semantic state ---------- */
+  --ok:   #16a34a;
+  --warn: #d97706;
+  --err:  #dc2626;
+  --info: #2563eb;
+
+  /* ---------- Surface aliases (light mode) ---------- */
+  --bg:             var(--gray-50);
+  --surface:        #ffffff;
+  --surface-2:      var(--gray-100);
+  --surface-3:      var(--gray-200);
+  --text:           var(--gray-900);
+  --text-soft:      var(--gray-600);
+  --border:         var(--gray-200);
+  --border-strong:  var(--gray-300);
+
+  /* The black hairline used on printed form sheets — never
+     re-mapped in dark mode because forms always print on white. */
+  --line:           #000;
+  --shade:          #f2f2f2; /* header-cell shading on forms */
+}
+
+/* ---------- Dark mode ---------- */
+body.dark {
+  --bg:            #0a1019;
+  --surface:       #131c2e;
+  --surface-2:     #1b2740;
+  --surface-3:     #223052;
+  --text:          #eaf0fb;
+  --text-soft:     #a6b6d2;
+  --border:        #273450;
+  --border-strong: #34466a;
+  --blue-50:       #16233f;
+}

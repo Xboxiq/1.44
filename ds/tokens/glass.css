@@ -1,0 +1,43 @@
+/* ============================================================
+   Glass / Spatial — Rasafa Service Hub
+   ----------------------------------------------------
+   The "Command Shell" surfaces are translucent panels that
+   sit over a soft Aurora background (navy + crimson + gold
+   glows). These tokens centralise the glass recipe used on
+   the rail, topbar, dock, and floating action surfaces.
+
+   Dark-mode swaps in dimmer translucent values so the
+   background glows still register through the panels.
+   ============================================================ */
+
+:root {
+  /* Translucent surface body (cards, rail, topbar)   */
+  --glass-bg:        rgba(255, 255, 255, 0.55);
+  /* Stronger glass for floating overlays (dock, menus)*/
+  --glass-bg-strong: rgba(255, 255, 255, 0.78);
+  /* Hairline rim                                      */
+  --glass-border:    rgba(255, 255, 255, 0.55);
+  /* Inner highlight on the top edge                   */
+  --glass-edge:      rgba(255, 255, 255, 0.85);
+  /* Drop shadow tuned for translucent surfaces        */
+  --glass-shadow:    0 10px 32px rgba(11, 37, 69, 0.10),
+                     0 2px 8px rgba(11, 37, 69, 0.06);
+
+  /* Aurora glow colors used behind glass panels       */
+  --bg-glow-navy:    color-mix(in srgb, var(--brand-navy) 14%, transparent);
+  --bg-glow-crimson: color-mix(in srgb, var(--brand-red)  10%, transparent);
+  --bg-glow-gold:    color-mix(in srgb, var(--brand-gold)  8%, transparent);
+}
+
+body.dark {
+  --glass-bg:        rgba(31, 31, 34, 0.45);
+  --glass-bg-strong: rgba(20, 20, 24, 0.72);
+  --glass-border:    rgba(255, 255, 255, 0.10);
+  --glass-edge:      rgba(255, 255, 255, 0.22);
+  --glass-shadow:    0 14px 36px rgba(0, 0, 0, 0.45),
+                     inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  --bg-glow-navy:    rgba(35, 35, 80, 0.45);
+  --bg-glow-crimson: rgba(193, 18, 31, 0.20);
+  --bg-glow-gold:    rgba(244, 196, 48, 0.08);
+}
