@@ -2992,6 +2992,7 @@ function initCommandShell() {
    الإقلاع
    ============================================================ */
 async function boot() {
+  if (window.__REACT_UI__) return;
   loadDrafts();
   renderSkeleton();
   try {

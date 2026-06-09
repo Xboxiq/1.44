@@ -1,162 +1,68 @@
-<!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<!doctype html>
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
-  <meta name="description" content="تدفّق الخير — منصة أتمتة نماذج خدمات المشتركين، الشركة العامة لتوزيع كهرباء بغداد، قطاع الرصافة." />
-  <title>تدفّق الخير — منصة خدمات المشتركين · كهرباء الرصافة</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تدفّق الخير — منصة خدمات المشتركين</title>
   <link rel="icon" href="assets/img/logo.png" type="image/png" />
-  <link rel="apple-touch-icon" href="assets/img/logo.png" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block" />
 
-  <!-- Platform design system (تدفق الخير — منصة متكاملة) -->
-  <link rel="stylesheet" href="assets/css/ds/styles.css?v=1" />
-  <link rel="stylesheet" href="assets/css/platform/app.css?v=1" />
-  <link rel="stylesheet" href="assets/css/platform/app2.css?v=1" />
-  <link rel="stylesheet" href="assets/css/platform/app3.css?v=1" />
-  <link rel="stylesheet" href="assets/css/platform/app4.css?v=1" />
-  <link rel="stylesheet" href="assets/css/platform/ux.css?v=1" />
-  <link rel="stylesheet" href="assets/css/platform/dashboard.css?v=1" />
-  <link rel="stylesheet" href="assets/css/platform/cmdk.css?v=1" />
-  <link rel="stylesheet" href="assets/css/platform/bridge.css?v=1" />
+  <link rel="stylesheet" href="ds/styles.css" />
+  <link rel="stylesheet" href="app.css" />
+  <link rel="stylesheet" href="app2.css" />
+  <link rel="stylesheet" href="app3.css" />
+  <link rel="stylesheet" href="app4.css" />
+  <link rel="stylesheet" href="ux.css" />
+  <link rel="stylesheet" href="dashboard.css" />
 
-  <!-- Form engine + A4 print (preserved from original repo) -->
-  <link rel="stylesheet" href="assets/css/styles.css?v=32" />
-  <link rel="stylesheet" href="assets/css/print.css?v=32" media="print" />
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 </head>
-<body class="theme-platform">
-  <a href="#app" class="skip-link">تخطٍّ إلى المحتوى</a>
+<body>
+  <div id="root"></div>
 
-  <div class="app-shell" id="platformShell">
-    <!-- Command Rail -->
-    <aside class="rs-rail" id="platformRail" aria-label="التنقّل الرئيسي" tabindex="0">
-      <a class="rs-rail__brand" href="#/" aria-label="الرئيسية">
-        <div class="rs-rail__mark"><img src="assets/img/logo.png" alt="" /></div>
-        <div class="rs-rail__text">
-          <strong>تدفّق الخير</strong>
-          <small>RASAFA · CS HUB</small>
-        </div>
-      </a>
-      <ul class="rs-rail__nav">
-        <li>
-          <a class="rs-rail__link is-active" href="#/" data-route="home">
-            <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
-            <span class="rs-rail__link-lbl">الرئيسية</span>
-          </a>
-        </li>
-        <li>
-          <a class="rs-rail__link" href="#/services" data-route="services">
-            <span class="material-symbols-outlined" aria-hidden="true">apps</span>
-            <span class="rs-rail__link-lbl">الخدمات</span>
-          </a>
-        </li>
-        <li>
-          <a class="rs-rail__link" href="#/cases" data-route="cases">
-            <span class="material-symbols-outlined" aria-hidden="true">inventory_2</span>
-            <span class="rs-rail__link-lbl">الحالات النشطة</span>
-          </a>
-        </li>
-        <li>
-          <a class="rs-rail__link" href="#/fees" data-route="fees">
-            <span class="material-symbols-outlined" aria-hidden="true">request_quote</span>
-            <span class="rs-rail__link-lbl">الأجور والأسعار</span>
-          </a>
-        </li>
-        <li>
-          <a class="rs-rail__link" href="#/guide" data-route="guide">
-            <span class="material-symbols-outlined" aria-hidden="true">menu_book</span>
-            <span class="rs-rail__link-lbl">دليل الإجراءات</span>
-          </a>
-        </li>
-        <li>
-          <a class="rs-rail__link" href="#/reports" data-route="reports">
-            <span class="material-symbols-outlined" aria-hidden="true">bar_chart</span>
-            <span class="rs-rail__link-lbl">التقارير</span>
-          </a>
-        </li>
-      </ul>
-      <div class="rs-rail__foot">
-        <button class="rs-rail__sos" type="button" id="platformSos" title="طوارئ — CA0002" aria-label="بلاغ خطر">
-          <span class="material-symbols-outlined" aria-hidden="true">crisis_alert</span>
-          <span class="rs-rail__link-lbl">طوارئ — CA0002</span>
-        </button>
-      </div>
-    </aside>
+  <script>window.__REACT_UI__ = true;</script>
+  <script src="data-loader.js"></script>
+  <script>
+    (function () {
+      var JSX_FILES = [
+        'shell.jsx',
+        'info_drawer.jsx',
+        'cmdk.jsx',
+        'dashboard.jsx',
+        'services_hub.jsx',
+        'service_detail.jsx',
+        'form_shell.jsx',
+        'form_pro.jsx',
+        'form_orig.jsx',
+        'form_page.jsx',
+        'cases.jsx',
+        'app.jsx'
+      ];
 
-    <div class="app-main">
-      <!-- Topbar -->
-      <header class="rs-topbar no-print" id="platformTopbar">
-        <a class="rs-topbar__brand" href="#/" aria-label="الرئيسية">
-          <div class="rs-topbar__mark"><img src="assets/img/logo.png" alt="شعار الشركة" /></div>
-          <div class="rs-topbar__text">
-            <strong>تدفّق الخير</strong>
-            <small>منصة خدمات المشتركين — كهرباء الرصافة</small>
-          </div>
-        </a>
-        <div class="cluster" style="flex:1;justify-content:center;max-width:560px">
-          <button
-            type="button"
-            class="rs-search"
-            id="platformCmdK"
-            style="width:100%;text-align:start;cursor:pointer;border:1.5px solid var(--border)"
-            aria-label="فتح البحث السريع"
-          >
-            <span class="rs-search__ico"><span class="material-symbols-outlined" aria-hidden="true">search</span></span>
-            <span style="flex:1;color:var(--text-soft);font-size:0.9rem">
-              ابحث برقم اشتراك، اسم مشترك، أو رقم خدمة CS0001…
-            </span>
-            <span class="kbd kbd--ghost">⌘K</span>
-          </button>
-        </div>
-        <div class="rs-topbar__actions">
-          <span class="rs-topbar__status"><span class="rs-pulse" aria-hidden="true"></span> متصل</span>
-          <button type="button" class="rs-iconbtn" id="platformTheme" aria-label="الوضع الليلي">
-            <span class="material-symbols-outlined" aria-hidden="true">dark_mode</span>
-          </button>
-          <button type="button" class="rs-iconbtn" id="platformPrint" aria-label="طباعة الصفحة" title="طباعة">
-            <span class="material-symbols-outlined" aria-hidden="true">print</span>
-          </button>
-          <span style="display:flex;align-items:center;gap:8px;padding-inline:8px;border-inline-start:1px solid var(--border);margin-inline-start:6px">
-            <span style="width:36px;height:36px;border-radius:50%;background:var(--brand-grad);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px" aria-hidden="true">كب</span>
-            <span style="display:flex;flex-direction:column;line-height:1.25">
-              <strong style="font-size:0.85rem">م. كرار البياتي</strong>
-              <small style="font-size:0.72rem;color:var(--text-soft)">مركز الرصافة — الكرادة</small>
-            </span>
-          </span>
-        </div>
-      </header>
+      function loadBabelScripts(files, i) {
+        if (i >= files.length) return;
+        var s = document.createElement('script');
+        s.type = 'text/babel';
+        s.setAttribute('data-presets', 'react');
+        s.src = files[i];
+        s.onload = function () { loadBabelScripts(files, i + 1); };
+        s.onerror = function () {
+          console.error('Failed to load', files[i]);
+          loadBabelScripts(files, i + 1);
+        };
+        document.body.appendChild(s);
+      }
 
-      <!-- Main content (rendered by app.js + platform.js) -->
-      <main id="app" class="app-page app-root" role="main" aria-live="polite">
-        <div class="section" style="text-align:center;padding:48px 24px">
-          <strong>جارٍ تجهيز المنصة…</strong>
-          <p class="muted" style="margin-top:8px">يتم تحميل سجل الخدمات الرسمي.</p>
-        </div>
-      </main>
-    </div>
-  </div>
+      function bootUi() {
+        loadBabelScripts(JSX_FILES, 0);
+      }
 
-  <!-- Command palette mount -->
-  <div id="cmdkRoot" aria-hidden="true"></div>
-
-  <!-- libs -->
-  <script src="assets/vendor/pizzip.min.js"></script>
-  <script src="assets/vendor/docxtemplater.js"></script>
-  <script src="assets/vendor/jszip.min.js"></script>
-  <script src="assets/vendor/docx-preview.min.js"></script>
-  <script src="assets/js/docxgen.js?v=18"></script>
-  <script src="assets/js/platform-core.js?v=2"></script>
-  <script src="assets/js/platform-info.js?v=2"></script>
-  <script src="assets/js/platform-form.js?v=2"></script>
-  <script src="assets/js/platform-service.js?v=2"></script>
-  <script src="assets/js/platform-cases.js?v=2"></script>
-  <script src="assets/js/cmdk.js?v=2"></script>
-  <script src="assets/js/platform.js?v=2"></script>
-  <script src="assets/js/app.js?v=34"></script>
+      if (window.__DATA_LOADED__) bootUi();
+      else window.addEventListener('tq-data-ready', bootUi, { once: true });
+    })();
+  </script>
 </body>
 </html>
