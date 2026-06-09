@@ -16,53 +16,15 @@
   <link rel="stylesheet" href="ux.css" />
   <link rel="stylesheet" href="dashboard.css" />
 
-  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script src="assets/vendor/react.development.js"></script>
+  <script src="assets/vendor/react-dom.development.js"></script>
+  <script src="assets/vendor/babel.min.js"></script>
 </head>
 <body>
   <div id="root"></div>
 
   <script>window.__REACT_UI__ = true;</script>
   <script src="data-loader.js"></script>
-  <script>
-    (function () {
-      var JSX_FILES = [
-        'shell.jsx',
-        'info_drawer.jsx',
-        'cmdk.jsx',
-        'dashboard.jsx',
-        'services_hub.jsx',
-        'service_detail.jsx',
-        'form_shell.jsx',
-        'form_pro.jsx',
-        'form_orig.jsx',
-        'form_page.jsx',
-        'cases.jsx',
-        'app.jsx'
-      ];
-
-      function loadBabelScripts(files, i) {
-        if (i >= files.length) return;
-        var s = document.createElement('script');
-        s.type = 'text/babel';
-        s.setAttribute('data-presets', 'react');
-        s.src = files[i];
-        s.onload = function () { loadBabelScripts(files, i + 1); };
-        s.onerror = function () {
-          console.error('Failed to load', files[i]);
-          loadBabelScripts(files, i + 1);
-        };
-        document.body.appendChild(s);
-      }
-
-      function bootUi() {
-        loadBabelScripts(JSX_FILES, 0);
-      }
-
-      if (window.__DATA_LOADED__) bootUi();
-      else window.addEventListener('tq-data-ready', bootUi, { once: true });
-    })();
-  </script>
+  <script src="ui-boot.js"></script>
 </body>
 </html>
