@@ -1,0 +1,58 @@
+/* ============================================================
+   Typography — Rasafa Service Hub
+   ----------------------------------------------------
+   Four family stacks, three roles:
+     • --font-cmd      → primary UI body & forms (Arabic-first)
+     • --font-display  → large titles & numeric / Latin display
+     • --font-mono     → reference numbers, IDs, status chips
+     • --font-form     → printed-form sheets (must stay Arial
+                         to match the official paper layout)
+
+   Type scale uses a ~1.2 ratio with fluid clamps on the
+   display sizes so headers breathe on wide screens without
+   blowing out RTL line widths.
+   ============================================================ */
+
+:root {
+  /* ---------- Family stacks ---------- */
+  --font-cmd:     'Cairo', 'Plus Jakarta Sans', 'Tajawal', system-ui, 'Segoe UI', Tahoma, sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Cairo', system-ui, sans-serif;
+  --font-arabic:  'Cairo', 'Tajawal', system-ui, 'Segoe UI', Tahoma, sans-serif;
+  --font-tajawal: 'Tajawal', 'Cairo', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-form:    'Arial', 'Liberation Sans', 'Arimo', 'Segoe UI', 'Tahoma', sans-serif;
+
+  /* Legacy alias kept for components migrated from the v1 app. */
+  --font:         var(--font-cmd);
+
+  /* ---------- Sizes (rem-based, fluid display) ---------- */
+  --fs-xs:   0.76rem;   /* 12.2px — micro labels             */
+  --fs-sm:   0.86rem;   /* 13.8px — secondary body, captions */
+  --fs-base: 1rem;      /* 16px — body                        */
+  --fs-md:   1.075rem;  /* 17.2px — emphasised body           */
+  --fs-lg:   clamp(1.12rem, 1.6vw, 1.28rem);   /* section H   */
+  --fs-xl:   clamp(1.30rem, 2.2vw, 1.60rem);   /* card title  */
+  --fs-2xl:  clamp(1.55rem, 3.0vw, 2.05rem);   /* page H1     */
+  --fs-3xl:  clamp(1.90rem, 4.0vw, 2.60rem);   /* hero title  */
+  --fs-4xl:  clamp(2.20rem, 5.0vw, 3.20rem);   /* marquee     */
+
+  /* ---------- Line-heights ---------- */
+  --lh-tight:  1.25;
+  --lh-snug:   1.40;
+  --lh-normal: 1.60;
+  --lh-loose:  1.75;
+
+  /* ---------- Weights ---------- */
+  --fw-regular:  400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;
+  --fw-extra:    800;
+
+  /* ---------- Letter-spacing presets ---------- */
+  --tracking-tight:  -0.015em;
+  --tracking-snug:   -0.005em;
+  --tracking-normal: 0;
+  --tracking-wide:    0.06em;
+  --tracking-caps:    0.10em;
+}

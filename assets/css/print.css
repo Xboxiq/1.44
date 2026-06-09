@@ -1179,5 +1179,38 @@
   }
   /* لا تُظهر الـcolophon إن لم نضع data-print-stamp (تصدير Word مثلاً) */
   #printSheet:not([data-print-stamp])::after { content: none !important; }
+
+  /* Platform shell — إخفاء واجهة المنصة عند الطباعة العادية (غير clone-to-body) */
+  .app-shell > *:not(.app-main),
+  .rs-rail,
+  .rs-topbar,
+  .no-print,
+  .platform-svc-body .cc-bar,
+  .platform-svc-body .form-mode-bar,
+  .platform-svc-body .ws-side,
+  .platform-svc-body .agent-assist,
+  .platform-svc-body .notes-card,
+  .hero,
+  .rs-tabs,
+  .rs-crumbs,
+  .searchhero,
+  .catbar,
+  .depts-premium,
+  .rh,
+  .spot,
+  .upnext { display: none !important; }
+
+  .app-shell {
+    display: block !important;
+    padding: 0 !important;
+    background: #fff !important;
+    background-image: none !important;
+  }
+  .app-main { gap: 0 !important; }
+  .app-page { padding: 0 !important; gap: 0 !important; }
+  .platform-svc-body .workspace,
+  .platform-svc-body .ws-main,
+  .platform-svc-body .form-stage,
+  .platform-svc-body .sheet-scroll { box-shadow: none !important; border: 0 !important; }
 }
 

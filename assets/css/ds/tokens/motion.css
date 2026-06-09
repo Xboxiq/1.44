@@ -1,0 +1,29 @@
+/* ============================================================
+   Motion — Rasafa Service Hub
+   ----------------------------------------------------
+   Three duration steps and four easing curves. All component
+   transitions in the system should pick from these tokens so
+   the rhythm stays consistent across the app.
+
+   Every animation in the system must be wrapped in a
+   prefers-reduced-motion check at the component level.
+   ============================================================ */
+
+:root {
+  /* ---------- Durations ---------- */
+  --duration-fast:  140ms;   /* hover / focus transitions   */
+  --duration-base:  220ms;   /* default UI transitions      */
+  --duration-slow:  380ms;   /* layout shifts, modal in/out */
+  --duration-xslow: 600ms;   /* hero reveals, scroll reveal */
+
+  /* ---------- Easing curves ----------
+     • ease            — material standard
+     • ease-out        — visionOS soft landing
+     • ease-spring     — overshoot for badges, pop-ins
+     • ease-elegant    — the polish-layer default        */
+  --ease:          cubic-bezier(.4, 0, .2, 1);
+  --ease-out:      cubic-bezier(.16, 1, .3, 1);
+  --ease-spring:   cubic-bezier(.34, 1.56, .64, 1);
+  --ease-elegant:  cubic-bezier(.22, 1, .36, 1);
+  --ease-shake:    cubic-bezier(.36, .07, .19, .97);
+}

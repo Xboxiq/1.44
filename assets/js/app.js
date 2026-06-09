@@ -1281,17 +1281,17 @@ function route() {
 const app = () => $('#app');
 
 /* ============================================================
-   DIWAN ROUTES — تفويض العرض للطبقة الجديدة (Skin & Views)
+   PLATFORM ROUTES — تفويض العرض لطبقة المنصة (Skin & Views)
    ------------------------------------------------------------
-   نُحافظ على renderHomeLegacy (التصميم القديم) كاحتياط، لكن
-   كل المسارات الجديدة تستخدم Diwan.* لتنسجم مع شكل الديوان.
+   نُحافظ على renderHomeLegacy كاحتياط، لكن المسارات تستخدم
+   Platform.* لتنسجم مع تصميم «تدفّق الخير — منصة متكاملة».
    ============================================================ */
 function renderHome() {
   App.current = null;
   const a = app();
   if (!a) return;
-  if (window.Diwan && typeof window.Diwan.renderHome === 'function') {
-    window.Diwan.renderHome(a, App);
+  if (window.Platform && typeof window.Platform.renderHome === 'function') {
+    window.Platform.renderHome(a, App);
     setActiveNav('#/');
     enhanceView();
     return;
@@ -1303,8 +1303,8 @@ function renderServicesRegistry() {
   App.current = null;
   const a = app();
   if (!a) return;
-  if (window.Diwan && typeof window.Diwan.renderRegistry === 'function') {
-    window.Diwan.renderRegistry(a, App, {});
+  if (window.Platform && typeof window.Platform.renderRegistry === 'function') {
+    window.Platform.renderRegistry(a, App, {});
     setActiveNav('#/');
     enhanceView();
   } else {
@@ -1316,8 +1316,8 @@ function renderFeesView() {
   App.current = null;
   const a = app();
   if (!a) return;
-  if (window.Diwan && typeof window.Diwan.renderFees === 'function') {
-    window.Diwan.renderFees(a, App);
+  if (window.Platform && typeof window.Platform.renderFees === 'function') {
+    window.Platform.renderFees(a, App);
     enhanceView();
   } else renderHomeLegacy();
 }
@@ -1326,8 +1326,8 @@ function renderGuideView() {
   App.current = null;
   const a = app();
   if (!a) return;
-  if (window.Diwan && typeof window.Diwan.renderGuide === 'function') {
-    window.Diwan.renderGuide(a, App);
+  if (window.Platform && typeof window.Platform.renderGuide === 'function') {
+    window.Platform.renderGuide(a, App);
     enhanceView();
   } else renderHomeLegacy();
 }
@@ -1336,8 +1336,8 @@ function renderCasesView() {
   App.current = null;
   const a = app();
   if (!a) return;
-  if (window.Diwan && typeof window.Diwan.renderCases === 'function') {
-    window.Diwan.renderCases(a, App);
+  if (window.Platform && typeof window.Platform.renderCases === 'function') {
+    window.Platform.renderCases(a, App);
     enhanceView();
   } else renderHomeLegacy();
 }
@@ -1491,9 +1491,9 @@ function renderServiceView(code, tab) {
   if (!svc) { renderHome(); return; }
   App.current = code;
 
-  // —— Diwan path: editorial header + sub-tabs + reuse existing engines ——
-  if (window.Diwan && typeof window.Diwan.renderServiceShell === 'function') {
-    window.Diwan.renderServiceShell(app(), App, code, tab || 'form');
+  // —— Platform path: hero header + sub-tabs + reuse existing engines ——
+  if (window.Platform && typeof window.Platform.renderServiceShell === 'function') {
+    window.Platform.renderServiceShell(app(), App, code, tab || 'form');
     // post-mount initialisations (same as legacy path)
     if ((tab || 'form') === 'form') {
       setSavedBadge(true);
@@ -1508,7 +1508,7 @@ function renderServiceView(code, tab) {
     return;
   }
 
-  // Legacy path (fallback if Diwan layer is unavailable)
+    // Legacy path (fallback if Platform layer is unavailable)
   const sec = App.data.meta.sections[svc.section];
   const view = el('main', { class: 'view view--service' });
 
@@ -2948,19 +2948,7 @@ function initCommandShell() {
     });
   }
   // إبراز رابط القسم النشط في السايدبار بحسب الـ hash
-  const railLinks = Array.from(document.querySelectorAll('.cmd-rail__link'));
-  const syncActive = () => {
-    const h = location.hash || '#/';
-    railLinks.forEach((a) => {
-      const href = a.getAttribute('href') || '';
-      const match = href === h || (href !== '#/' && h.startsWith(href));
-      a.classList.toggle('is-active', match);
-    });
-    // الرئيسية: نشطة إن لم تطابق أي قسم وكان الـ hash = '#/'
-    if (h === '#/' && railLinks[0]) { railLinks.forEach((a) => a.classList.remove('is-active')); railLinks[0].classList.add('is-active'); }
-  };
-  syncActive();
-  window.addEventListener('hashchange', syncActive);
+  // Platform rail / cmdk sync handled in platform.js (Platform.boot)
 }
 
 /* ============================================================
@@ -2983,15 +2971,16 @@ async function boot() {
     ]));
     return;
   }
-  // expose engine helpers to the Diwan view layer
+  // expose engine helpers to the Platform view layer
   window.renderGuide = renderGuide;
   window.renderPreview = renderPreview;
   window.renderWorkspace = renderWorkspace;
   window.resolveServicePrice = resolveServicePrice;
+  window.printUnified = printUnified;
 
-  // initialise Diwan shell (wire ticker, clock, nav sync)
-  if (window.Diwan && typeof window.Diwan.boot === 'function') {
-    try { window.Diwan.boot(App); } catch (e) { console.error('Diwan.boot failed', e); }
+  // initialise Platform shell (rail sync, cmdk, theme, print)
+  if (window.Platform && typeof window.Platform.boot === 'function') {
+    try { window.Platform.boot(App); } catch (e) { console.error('Platform.boot failed', e); }
   }
 
   initTheme();
