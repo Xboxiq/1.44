@@ -1,0 +1,107 @@
+/* Command palette — base styles (complements dashboard.css dark overrides) */
+#cmdkRoot {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: none;
+}
+.cmdk-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 37, 69, 0.45);
+  backdrop-filter: blur(6px);
+}
+.cmdk {
+  position: absolute;
+  top: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(640px, calc(100vw - 32px));
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.cmdk__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.cmdk__input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-cmd);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  outline: none;
+}
+.cmdk__list {
+  max-height: 52vh;
+  overflow: auto;
+  padding: 8px;
+}
+.cmdk__group {
+  padding: 8px 10px 4px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+  text-transform: uppercase;
+}
+.cmdk__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--text);
+  transition: background 160ms var(--ease);
+}
+.cmdk__item:hover,
+.cmdk__item.is-on {
+  background: color-mix(in srgb, var(--brand-navy) 8%, var(--surface-2));
+}
+.cmdk__item-txt {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.cmdk__item-txt strong {
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+.cmdk__item-txt small {
+  font-size: 0.78rem;
+  color: var(--text-soft);
+}
+.cmdk__empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+.cmdk__foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+  font-size: 0.75rem;
+  color: var(--text-soft);
+}
+body.cmdk-open { overflow: hidden; }

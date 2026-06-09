@@ -1,0 +1,42 @@
+/* ============================================================
+   Spacing & Radii — Rasafa Service Hub
+   ----------------------------------------------------
+   4-step base (4 / 8 / 12 / 16 / 20 / 24 / 32 / 40 / 48 / 64).
+   Radii ladder from 9px (input) → 26px (hero panel) plus a
+   pill token for tags and dock buttons. Both layers are
+   used through aliases on individual components.
+   ============================================================ */
+
+:root {
+  /* ---------- Spacing scale (px) ---------- */
+  --s1:  4px;
+  --s2:  8px;
+  --s3:  12px;
+  --s4:  16px;
+  --s5:  20px;
+  --s6:  24px;
+  --s8:  32px;
+  --s10: 40px;
+  --s12: 48px;
+  --s16: 64px;
+  --s20: 80px;
+  --s24: 96px;
+
+  /* ---------- Radii ---------- */
+  --radius-sm:   9px;    /* inputs, small chips                */
+  --radius:      14px;   /* default card, button               */
+  --radius-md:   16px;   /* sidebar nav item                   */
+  --radius-lg:   20px;   /* section cards, dock                */
+  --radius-xl:   26px;   /* hero, large surfaces               */
+  --radius-pill: 999px;  /* tags, filter chips, status pills   */
+
+  /* ---------- Layout ---------- */
+  --maxw:        1180px;     /* page content cap               */
+
+  /* Command-shell layout tokens (the floating-rail layout) */
+  --cmd-rail-w:        76px;
+  --cmd-rail-w-open:   248px;
+  --cmd-rail-inset:    16px;
+  --cmd-topbar-h:      72px;
+  --cmd-dock-h:        68px;
+}

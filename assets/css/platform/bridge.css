@@ -1,0 +1,32 @@
+/* Bridge: form engine (styles.css) inside platform shell */
+.platform-svc-body .workspace {
+  margin-top: 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.platform-svc-body .cc-bar {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.platform-svc-body .guide-view,
+.platform-svc-body .preview-wrap {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: var(--s4);
+  box-shadow: var(--shadow-sm);
+}
+.skip-link {
+  position: absolute;
+  inset-inline-start: 12px;
+  top: -100px;
+  z-index: 300;
+  padding: 8px 14px;
+  background: var(--brand-navy);
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.skip-link:focus { top: 12px; }

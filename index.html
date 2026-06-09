@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
-  <meta name="description" content="تدفّق الخير — نظام أتمتة نماذج خدمات المشتركين، الشركة العامة لتوزيع كهرباء بغداد، قطاع الرصافة." />
-  <title>تدفّق الخير — ديوان خدمات المشتركين · كهرباء الرصافة</title>
+  <meta name="description" content="تدفّق الخير — منصة أتمتة نماذج خدمات المشتركين، الشركة العامة لتوزيع كهرباء بغداد، قطاع الرصافة." />
+  <title>تدفّق الخير — منصة خدمات المشتركين · كهرباء الرصافة</title>
   <link rel="icon" href="assets/img/logo.png" type="image/png" />
   <link rel="apple-touch-icon" href="assets/img/logo.png" />
 
@@ -14,143 +14,129 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="assets/css/styles.css?v=31" />
-  <link rel="stylesheet" href="assets/css/diwan.css?v=1" />
-  <link rel="stylesheet" href="assets/css/print.css?v=31" media="print" />
+  <!-- Platform design system (تدفق الخير — منصة متكاملة) -->
+  <link rel="stylesheet" href="assets/css/ds/styles.css?v=1" />
+  <link rel="stylesheet" href="assets/css/platform/app.css?v=1" />
+  <link rel="stylesheet" href="assets/css/platform/app2.css?v=1" />
+  <link rel="stylesheet" href="assets/css/platform/app3.css?v=1" />
+  <link rel="stylesheet" href="assets/css/platform/app4.css?v=1" />
+  <link rel="stylesheet" href="assets/css/platform/ux.css?v=1" />
+  <link rel="stylesheet" href="assets/css/platform/dashboard.css?v=1" />
+  <link rel="stylesheet" href="assets/css/platform/cmdk.css?v=1" />
+  <link rel="stylesheet" href="assets/css/platform/bridge.css?v=1" />
+
+  <!-- Form engine + A4 print (preserved from original repo) -->
+  <link rel="stylesheet" href="assets/css/styles.css?v=32" />
+  <link rel="stylesheet" href="assets/css/print.css?v=32" media="print" />
 </head>
-<body class="cmd-shell">
+<body>
   <a href="#app" class="skip-link">تخطٍّ إلى المحتوى</a>
 
-  <!-- ============================================================
-       DIWAN SHELL — الترويسة + الشريط الحيّ + التبويبات + المحتوى
-       يبنى ديناميكياً عبر app.js (تيكر، عداد، حسب الساعة)
-       ============================================================ -->
-  <div class="diwan" id="diwanRoot">
-    <!-- 1. WIRE TICKER (الشريط الحيّ) -->
-    <div class="wire" id="wireTicker" aria-label="السجل الحيّ"></div>
-
-    <!-- 2. LETTERHEAD (الترويسة الرسمية) -->
-    <header class="head" id="diwanHead">
-      <div class="head__seal">
-        <a class="head__mark" href="#/" aria-label="الذهاب للصفحة الرئيسية">
-          <img src="assets/img/logo.png" alt="شعار الشركة" />
-        </a>
-        <div class="head__title">
-          <span class="ar">تدفّق الخير</span>
-          <span class="div" aria-hidden="true"></span>
-          <span class="en">RASAFA · SUBSCRIBER SERVICES · DIWAN 014</span>
+  <div class="app-shell" id="platformShell">
+    <!-- Command Rail -->
+    <aside class="rs-rail" id="platformRail" aria-label="التنقّل الرئيسي" tabindex="0">
+      <a class="rs-rail__brand" href="#/" aria-label="الرئيسية">
+        <div class="rs-rail__mark"><img src="assets/img/logo.png" alt="" /></div>
+        <div class="rs-rail__text">
+          <strong>تدفّق الخير</strong>
+          <small>RASAFA · CS HUB</small>
         </div>
-      </div>
-      <div class="head__center">
-        <div class="sub">السجل الرسمي للخدمات</div>
-        <div class="reg" id="diwanCenterTitle">REGISTRUM SERVITIORUM · VOL. XIV</div>
-        <div class="frame">
-          <span class="dot" aria-hidden="true"></span>
-          <span id="diwanClock">—</span>
-        </div>
-      </div>
-      <div class="head__user">
-        <div class="head__who">
-          <strong>م. كرار البياتي</strong>
-          <small>RS-014 · مشرف نوبة الصباح</small>
-        </div>
-        <div class="head__avatar" aria-hidden="true">كب</div>
-      </div>
-    </header>
-
-    <!-- 3. SHELL: TAB BAR + COLUMN + MINIRAIL -->
-    <div class="dshell">
-      <div class="dcolumn">
-        <!-- TAB BAR -->
-        <nav class="dtabs" role="tablist" aria-label="التنقّل الرئيسي" id="diwanTabs">
-          <a class="dtab is-on" role="tab" href="#/" data-route="home">
-            <span class="dtab__num">01</span>
-            <span>الديوان</span>
+      </a>
+      <ul class="rs-rail__nav">
+        <li>
+          <a class="rs-rail__link is-active" href="#/" data-route="home">
+            <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
+            <span class="rs-rail__link-lbl">الرئيسية</span>
           </a>
-          <a class="dtab" role="tab" href="#/services" data-route="services">
-            <span class="dtab__num">02</span>
-            <span>سجلّ الخدمات</span>
+        </li>
+        <li>
+          <a class="rs-rail__link" href="#/services" data-route="services">
+            <span class="material-symbols-outlined" aria-hidden="true">apps</span>
+            <span class="rs-rail__link-lbl">الخدمات</span>
           </a>
-          <a class="dtab" role="tab" href="#/cases" data-route="cases">
-            <span class="dtab__num">03</span>
-            <span>الإضبارات</span>
+        </li>
+        <li>
+          <a class="rs-rail__link" href="#/cases" data-route="cases">
+            <span class="material-symbols-outlined" aria-hidden="true">inventory_2</span>
+            <span class="rs-rail__link-lbl">الحالات النشطة</span>
           </a>
-          <a class="dtab" role="tab" href="#/fees" data-route="fees">
-            <span class="dtab__num">04</span>
-            <span>لائحة الأجور</span>
+        </li>
+        <li>
+          <a class="rs-rail__link" href="#/fees" data-route="fees">
+            <span class="material-symbols-outlined" aria-hidden="true">request_quote</span>
+            <span class="rs-rail__link-lbl">الأجور والأسعار</span>
           </a>
-          <a class="dtab" role="tab" href="#/guide" data-route="guide">
-            <span class="dtab__num">05</span>
-            <span>دليل الإجراءات</span>
+        </li>
+        <li>
+          <a class="rs-rail__link" href="#/guide" data-route="guide">
+            <span class="material-symbols-outlined" aria-hidden="true">menu_book</span>
+            <span class="rs-rail__link-lbl">دليل الإجراءات</span>
           </a>
-        </nav>
-
-        <!-- MAIN APP CONTAINER (rendered by app.js) -->
-        <main id="app" class="dpage app-root" role="main" aria-live="polite">
-          <div class="dempty"><strong>جارٍ تجهيز الديوان…</strong> يتم تحميل سجل الخدمات الرسمي.</div>
-        </main>
-      </div>
-
-      <!-- MINIRAIL -->
-      <aside class="minirail" aria-label="إجراءات سريعة">
-        <a class="minirail__btn is-on" href="#/" title="الرئيسية" aria-label="الرئيسية">
-          <span class="material-symbols-outlined" aria-hidden="true">auto_stories</span>
-        </a>
-        <a class="minirail__btn" href="#/services" title="سجلّ الخدمات" aria-label="سجلّ الخدمات">
-          <span class="material-symbols-outlined" aria-hidden="true">library_books</span>
-        </a>
-        <a class="minirail__btn" href="#/cases" title="الإضبارات" aria-label="الإضبارات">
-          <span class="material-symbols-outlined" aria-hidden="true">folder_special</span>
-        </a>
-        <a class="minirail__btn" href="#/fees" title="لائحة الأجور" aria-label="لائحة الأجور">
-          <span class="material-symbols-outlined" aria-hidden="true">request_quote</span>
-        </a>
-        <a class="minirail__btn" href="#/guide" title="دليل الإجراءات" aria-label="دليل الإجراءات">
-          <span class="material-symbols-outlined" aria-hidden="true">menu_book</span>
-        </a>
-        <span class="minirail__sep" aria-hidden="true"></span>
-        <button class="minirail__btn" type="button" id="diwanSearch" title="بحث سريع" aria-label="بحث سريع">
-          <span class="material-symbols-outlined" aria-hidden="true">search</span>
-        </button>
-        <button class="minirail__btn" type="button" id="diwanPrint" title="طباعة" aria-label="طباعة">
-          <span class="material-symbols-outlined" aria-hidden="true">print</span>
-        </button>
-        <button class="minirail__sos" type="button" id="diwanSos" title="بلاغ خطر — CA0002" aria-label="بلاغ خطر">
+        </li>
+      </ul>
+      <div class="rs-rail__foot">
+        <button class="rs-rail__sos" type="button" id="platformSos" title="طوارئ — CA0002" aria-label="بلاغ خطر">
           <span class="material-symbols-outlined" aria-hidden="true">crisis_alert</span>
+          <span class="rs-rail__link-lbl">طوارئ — CA0002</span>
         </button>
-      </aside>
-    </div>
+      </div>
+    </aside>
 
-    <!-- 4. FOOTER -->
-    <footer class="dfoot app-chrome">
-      <div class="dfoot__brand">
-        <small>RS · 014 · DIWAN</small>
-        <strong>الشركة العامة لتوزيع كهرباء بغداد — قطاع الرصافة</strong>
-        <p>مشروع التحول الذكي في الشبكة الكهربائية لفرع توزيع كهرباء الرصافة — منطقة مركز الرصافة. نظام أتمتة نماذج خدمات المشتركين: ٣١ خدمة موزّعة على ٤ أقسام رسمية، بطباعة A4 مطابقة للأصل.</p>
-      </div>
-      <div>
-        <h4>الأقسام الرسمية</h4>
-        <ul>
-          <li>CS · الاشتراكات</li>
-          <li>CT · الفني</li>
-          <li>CB · المالي والجباية</li>
-          <li>CA · الإبلاغ والشكاوى</li>
-        </ul>
-      </div>
-      <div>
-        <h4>الجهة المنفّذة</h4>
-        <ul>
-          <li>شركة <strong>تدفّق الخير</strong></li>
-          <li>التحوّل الرقمي والأتمتة</li>
-          <li>طباعة مطابقة للنموذج الورقي</li>
-        </ul>
-      </div>
-      <div class="dfoot__bar">
-        <span>© <span id="dfootYear">2026</span> · الشركة العامة لتوزيع كهرباء بغداد / قطاع الرصافة — جميع الحقوق محفوظة.</span>
-        <span class="credit">Designed &amp; developed by <strong>Hussein</strong></span>
-      </div>
-    </footer>
+    <div class="app-main">
+      <!-- Topbar -->
+      <header class="rs-topbar no-print" id="platformTopbar">
+        <a class="rs-topbar__brand" href="#/" aria-label="الرئيسية">
+          <div class="rs-topbar__mark"><img src="assets/img/logo.png" alt="شعار الشركة" /></div>
+          <div class="rs-topbar__text">
+            <strong>تدفّق الخير</strong>
+            <small>منصة خدمات المشتركين — كهرباء الرصافة</small>
+          </div>
+        </a>
+        <div class="cluster" style="flex:1;justify-content:center;max-width:560px">
+          <button
+            type="button"
+            class="rs-search"
+            id="platformCmdK"
+            style="width:100%;text-align:start;cursor:pointer;border:1.5px solid var(--border)"
+            aria-label="فتح البحث السريع"
+          >
+            <span class="rs-search__ico"><span class="material-symbols-outlined" aria-hidden="true">search</span></span>
+            <span style="flex:1;color:var(--text-soft);font-size:0.9rem">
+              ابحث برقم اشتراك، اسم مشترك، أو رقم خدمة CS0001…
+            </span>
+            <span class="kbd kbd--ghost">⌘K</span>
+          </button>
+        </div>
+        <div class="rs-topbar__actions">
+          <span class="rs-topbar__status"><span class="rs-pulse" aria-hidden="true"></span> متصل</span>
+          <button type="button" class="rs-iconbtn" id="platformTheme" aria-label="الوضع الليلي">
+            <span class="material-symbols-outlined" aria-hidden="true">dark_mode</span>
+          </button>
+          <button type="button" class="rs-iconbtn" id="platformPrint" aria-label="طباعة الصفحة" title="طباعة">
+            <span class="material-symbols-outlined" aria-hidden="true">print</span>
+          </button>
+          <span style="display:flex;align-items:center;gap:8px;padding-inline:8px;border-inline-start:1px solid var(--border);margin-inline-start:6px">
+            <span style="width:36px;height:36px;border-radius:50%;background:var(--brand-grad);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px" aria-hidden="true">كب</span>
+            <span style="display:flex;flex-direction:column;line-height:1.25">
+              <strong style="font-size:0.85rem">م. كرار البياتي</strong>
+              <small style="font-size:0.72rem;color:var(--text-soft)">مركز الرصافة — الكرادة</small>
+            </span>
+          </span>
+        </div>
+      </header>
+
+      <!-- Main content (rendered by app.js + platform.js) -->
+      <main id="app" class="app-page app-root" role="main" aria-live="polite">
+        <div class="section" style="text-align:center;padding:48px 24px">
+          <strong>جارٍ تجهيز المنصة…</strong>
+          <p class="muted" style="margin-top:8px">يتم تحميل سجل الخدمات الرسمي.</p>
+        </div>
+      </main>
+    </div>
   </div>
+
+  <!-- Command palette mount -->
+  <div id="cmdkRoot" aria-hidden="true"></div>
 
   <!-- libs -->
   <script src="assets/vendor/pizzip.min.js"></script>
@@ -158,7 +144,8 @@
   <script src="assets/vendor/jszip.min.js"></script>
   <script src="assets/vendor/docx-preview.min.js"></script>
   <script src="assets/js/docxgen.js?v=18"></script>
-  <script src="assets/js/diwan.js?v=1"></script>
-  <script src="assets/js/app.js?v=32"></script>
+  <script src="assets/js/cmdk.js?v=1"></script>
+  <script src="assets/js/platform.js?v=1"></script>
+  <script src="assets/js/app.js?v=33"></script>
 </body>
 </html>
