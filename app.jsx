@@ -2,15 +2,63 @@
 // App router & root
 // =============================================================
 
-function App() {
+function routeFromHash() {
+  const h = (location.hash || '').replace(/^#\/?/, '').replace(/\/$/, '');
+  if (!h) return { name: 'home' };
+  const parts = h.split('/').filter(Boolean);
+  if (parts[0] === 'services') return { name: 'services', section: parts[1] || 'all' };
+  if (parts[0] === 'cases') {
+    if (parts[1]) return { name: 'case', id: decodeURIComponent(parts[1]), svc: parts[2] };
+    return { name: 'cases' };
+  }
+  if (parts[0] === 'fees' || parts[0] === 'pricing') return { name: 'pricing' };
+  if (parts[0] === 'guide') return { name: 'guide' };
+  if (parts[0] === 'reports') return { name: 'reports' };
+  if (parts[0] === 'service' && parts[1]) {
+    const code = parts[1].toUpperCase();
+    if (parts[2] === 'form') return { name: 'form', code };
+    return { name: 'detail', code };
+  }
+  return { name: 'home' };
+}
+
+function hashFromRoute(route) {
+  switch (route.name) {
+    case 'home': return '#/';
+    case 'services': return '#/services';
+    case 'detail': return '#/service/' + route.code;
+    case 'form': return '#/service/' + route.code + '/form';
+    case 'cases': return '#/cases';
+    case 'case': return '#/cases/' + encodeURIComponent(route.id) + (route.svc ? '/' + route.svc : '');
+    case 'pricing': return '#/fees';
+    case 'guide': return '#/guide';
+    case 'reports': return '#/reports';
+    default: return '#/';
+  }
+}
+
+function TqApp() {
   const [route, setRoute] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('tq-route') || '{"name":"home"}'); }
-    catch { return { name: 'home' }; }
+    try {
+      if (location.hash && location.hash.length > 2) return routeFromHash();
+      return JSON.parse(localStorage.getItem('tq-route') || '{"name":"home"}');
+    } catch { return { name: 'home' }; }
   });
   useEffect(() => { localStorage.setItem('tq-route', JSON.stringify(route)); }, [route]);
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }); }, [route.name, route.code]);
 
-  const nav = (name, params = {}) => setRoute({ name, ...params });
+  const nav = (name, params = {}) => {
+    const next = { name, ...params };
+    setRoute(next);
+    const h = hashFromRoute(next);
+    if (location.hash !== h) location.hash = h;
+  };
+
+  useEffect(() => {
+    const onHash = () => setRoute(routeFromHash());
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
 
   // Command palette + shortcuts
   const [cmdkOpen, setCmdkOpen] = useState(false);
@@ -62,7 +110,10 @@ function App() {
       onNav={nav}
     />;
   } else if (route.name === 'case') {
-    page = <CaseDetail caseData={SAMPLE_CASE} onBack={() => nav('cases')} />;
+    const caseData = (window.RECENT_CASES || []).find(c => c.id === route.id)
+      || (route.svc && (window.RECENT_CASES || []).find(c => c.svc === route.svc))
+      || SAMPLE_CASE;
+    page = <CaseDetail caseData={caseData} onBack={() => nav('cases')} onOpenForm={(code) => nav('form', { code })} />;
   } else if (route.name === 'pricing') {
     page = <PricingPage onNav={nav} />;
   } else if (route.name === 'guide') {
@@ -200,4 +251,4 @@ function ReportsPage({ onNav }) {
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+ReactDOM.createRoot(document.getElementById('root')).render(<TqApp />);

@@ -1,5 +1,5 @@
 // =============================================================
-// FormPage — wires Pro + Original tabs, autosave, fees, steps
+// FormPage — React shell + legacy engine for all 31 services
 // =============================================================
 
 function computeFees(classKey, phaseKey) {
@@ -13,11 +13,22 @@ function computeFees(classKey, phaseKey) {
   return rows;
 }
 
+function LegacyEngineHost({ code, mode }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !window.LegacyForm) return undefined;
+    window.LegacyForm.mount(el, code, mode);
+    return () => window.LegacyForm.unmount(el);
+  }, [code, mode]);
+  return <div ref={ref} className="platform-form-engine" id={'engine-' + code} />;
+}
+
 function FormPage({ code, onNav, onCases }) {
   const svc = window.SERVICE_MAP[code];
-  const sec = window.SECTION_MAP[svc.section];
-  const [stage, setStage] = useState('preflight'); // preflight | filling
-  const [tab, setTab] = useState('pro'); // pro | orig
+  const isDemoPro = code === 'CS0001';
+  const [stage, setStage] = useState('preflight');
+  const [tab, setTab] = useState(isDemoPro ? 'pro' : 'orig');
   const [step, setStep] = useState('subscriber');
   const [infoOpen, setInfoOpen] = useState(false);
   const [data, set, saveStatus] = useAutosave(`tq-form-${code}`, {
@@ -29,14 +40,30 @@ function FormPage({ code, onNav, onCases }) {
     route: [],
   });
 
+  if (!svc) {
+    return (
+      <div className="app-page fade-in">
+        <Crumbs items={[
+          { label: 'الرئيسية', onClick: () => onNav('home') },
+          { label: 'الخدمات', onClick: () => onNav('services') },
+          { label: 'غير موجود' },
+        ]} />
+        <h1 className="pageheader__title">الخدمة غير موجودة: {code}</h1>
+        <Button onClick={() => onNav('services')}>عودة للخدمات</Button>
+      </div>
+    );
+  }
+
+  const sec = window.SECTION_MAP[svc.section];
+  const useLegacy = tab === 'orig' || !isDemoPro;
+  const engineMode = tab === 'pro' && isDemoPro ? 'smart' : 'original';
   const classKey = data.classKey || 'res';
   const phaseKey = data.phaseKey || '1ph';
-
   const fees = useMemo(() => computeFees(classKey, phaseKey), [classKey, phaseKey]);
   const total = fees.reduce((s, r) => s + r.amount, 0);
 
-  // Completion progress
   const progress = useMemo(() => {
+    if (useLegacy) return null;
     const checks = [
       !!data.subscriberName, !!data.nationalId, !!data.phone,
       !!data.classKey, !!data.phaseKey,
@@ -47,7 +74,24 @@ function FormPage({ code, onNav, onCases }) {
     ];
     const done = checks.filter(Boolean).length;
     return Math.round((done / checks.length) * 100);
-  }, [data]);
+  }, [data, useLegacy]);
+
+  const handlePrint = (e) => {
+    if (useLegacy && window.LegacyForm) window.LegacyForm.print(code, e);
+    else window.print();
+  };
+
+  const handleSave = () => {
+    if (window.LegacyForm) window.LegacyForm.save();
+    else if (window.saveDrafts) window.saveDrafts();
+  };
+
+  const handleClear = () => {
+    if (!confirm('هل تريد إفراغ النموذج؟')) return;
+    if (window.LegacyForm) window.LegacyForm.clear(code);
+    else localStorage.removeItem(`tq-form-${code}`);
+    location.reload();
+  };
 
   if (stage === 'preflight') {
     return (
@@ -63,6 +107,57 @@ function FormPage({ code, onNav, onCases }) {
           onConfirm={() => setStage('filling')}
           onCancel={() => onNav('detail', { code })}
         />
+      </div>
+    );
+  }
+
+  const headerTools = (
+    <div className="cluster">
+      {!useLegacy && <SaveBadge status={saveStatus} />}
+      <Button size="sm" variant="ghost" icon="info" onClick={() => setInfoOpen(true)}>دليل الخدمة</Button>
+      <Button size="sm" variant="ghost" icon="print" onClick={handlePrint}>طباعة</Button>
+      <Button size="sm" variant="ghost" icon="save" onClick={handleSave}>حفظ</Button>
+      <Button size="sm" variant="ghost" icon="delete" onClick={handleClear}>إفراغ</Button>
+    </div>
+  );
+
+  if (useLegacy) {
+    return (
+      <div className="app-page fade-in">
+        <Crumbs items={[
+          { label: 'الرئيسية', onClick: () => onNav('home') },
+          { label: 'الخدمات', onClick: () => onNav('services') },
+          { label: svc.name, onClick: () => onNav('detail', { code }) },
+          { label: 'النموذج' },
+        ]} />
+        <div className="row-between">
+          <div>
+            <h1 className="pageheader__title">{svc.name}</h1>
+            <p className="pageheader__sub">
+              <SectionBadge code={svc.section} /> &nbsp; {svc.code} · مدّة معتادة {svc.sla} أيام · مركز الرصافة-الكرادة
+            </p>
+          </div>
+          {headerTools}
+        </div>
+        <div className="formbody" style={{ marginTop: 16 }}>
+          {isDemoPro && (
+            <div className="formhead">
+              <div className="formhead__tools">
+                <div className="rs-tabs" style={{ borderBottom: 0 }}>
+                  <button className={`rs-tabs__item ${tab === 'pro' ? 'is-active' : ''}`} onClick={() => setTab('pro')}>
+                    <Icon name="auto_awesome" size={18} /> واجهة احترافية (تجريبي)
+                  </button>
+                  <button className={`rs-tabs__item ${tab === 'orig' ? 'is-active' : ''}`} onClick={() => setTab('orig')}>
+                    <Icon name="description" size={18} /> الفورمة الأصلية
+                    <span className="rs-tabs__badge">31 خدمة</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          <LegacyEngineHost code={code} mode={engineMode} />
+        </div>
+        {infoOpen && <InfoDrawer svc={svc} onClose={() => setInfoOpen(false)} />}
       </div>
     );
   }
@@ -83,21 +178,10 @@ function FormPage({ code, onNav, onCases }) {
             <SectionBadge code={svc.section} /> &nbsp; {svc.code} · مدّة معتادة {svc.sla} أيام · مركز الرصافة-الكرادة
           </p>
         </div>
-        <div className="cluster">
-          <SaveBadge status={saveStatus} />
-          <Button size="sm" variant="ghost" icon="info" onClick={() => setInfoOpen(true)}>دليل الخدمة</Button>
-          <Button size="sm" variant="ghost" icon="print" onClick={() => window.print()}>طباعة</Button>
-          <Button size="sm" variant="ghost" icon="delete" onClick={() => {
-            if (confirm('هل تريد إفراغ النموذج؟')) {
-              localStorage.removeItem(`tq-form-${code}`);
-              location.reload();
-            }
-          }}>إفراغ</Button>
-        </div>
+        {headerTools}
       </div>
 
       <div className="formshell">
-        {/* SIDE — Step nav + fees */}
         <div className="formside">
           <div className="stepnav">
             <div className="stepnav__head">
@@ -125,8 +209,6 @@ function FormPage({ code, onNav, onCases }) {
               ))}
             </ul>
           </div>
-
-          {/* Live fees panel */}
           <div className="feepanel">
             <div className="feepanel__head">
               <Icon name="payments" />
@@ -142,76 +224,43 @@ function FormPage({ code, onNav, onCases }) {
               <span className="lbl">المجموع</span>
               <span className="amt">{fmtIQD(total)}</span>
             </div>
-            <p className="muted" style={{ fontSize: '0.72rem', marginTop: 10, lineHeight: 1.6 }}>
-              يحتسب آلياً حسب الصنف ونوع الربط. عند تغيير الصنف يُحدّث المجموع فوراً.
-            </p>
           </div>
         </div>
 
-        {/* MAIN — form body */}
         <div className="formbody">
           <div className="formhead">
             <div>
               <h2 className="formhead__title">نموذج طلب — {svc.code}</h2>
-              <p className="formhead__sub">
-                {tab === 'pro'
-                  ? 'الواجهة الاحترافية — مرتّبة بأقسام ومحسّنة للإدخال السريع'
-                  : 'الواجهة الأصلية — طبق الأصل من النموذج الورقي الرسمي'}
-              </p>
+              <p className="formhead__sub">الواجهة الاحترافية التجريبية — CS0001 فقط</p>
             </div>
             <div className="formhead__tools">
               <div className="rs-tabs" style={{ borderBottom: 0 }}>
-                <button
-                  className={`rs-tabs__item ${tab === 'pro' ? 'is-active' : ''}`}
-                  onClick={() => setTab('pro')}
-                >
-                  <Icon name="auto_awesome" size={18} />
-                  واجهة احترافية
+                <button className={`rs-tabs__item ${tab === 'pro' ? 'is-active' : ''}`} onClick={() => setTab('pro')}>
+                  <Icon name="auto_awesome" size={18} /> واجهة احترافية
                 </button>
-                <button
-                  className={`rs-tabs__item ${tab === 'orig' ? 'is-active' : ''}`}
-                  onClick={() => setTab('orig')}
-                >
-                  <Icon name="description" size={18} />
-                  الفورمة الأصلية
+                <button className={`rs-tabs__item ${tab === 'orig' ? 'is-active' : ''}`} onClick={() => setTab('orig')}>
+                  <Icon name="description" size={18} /> الفورمة الأصلية
                   <span className="rs-tabs__badge">طبق الأصل</span>
                 </button>
               </div>
             </div>
           </div>
 
-          {tab === 'pro'
-            ? <ProForm data={data} set={set} classKey={classKey} phaseKey={phaseKey} />
-            : <OrigForm data={data} classKey={classKey} phaseKey={phaseKey} />}
+          <ProForm data={data} set={set} classKey={classKey} phaseKey={phaseKey} />
 
-          {/* Footer actions */}
           <div style={{
-            marginTop: 28,
-            padding: '18px 0 0',
-            borderTop: '1px solid var(--border)',
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            gap: 12, flexWrap: 'wrap',
+            marginTop: 28, padding: '18px 0 0', borderTop: '1px solid var(--border)',
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap',
           }}>
             <div className="cluster">
               <Tag dot variant={progress === 100 ? 'success' : 'info'}>
                 {progress === 100 ? 'جاهز للتقديم' : `${progress}% مكتمل`}
               </Tag>
-              <span className="muted" style={{ fontSize: '0.82rem' }}>
-                آخر تعديل: {new Date().toLocaleString('ar-IQ', { dateStyle: 'short', timeStyle: 'short' })}
-              </span>
             </div>
             <div className="cluster">
-              <Button variant="ghost" icon="save">حفظ كمسودة</Button>
-              <Button icon="print" onClick={() => window.print()}>طباعة بصيغة أصلية</Button>
-              <Button
-                variant="primary"
-                icon="send"
-                disabled={progress < 60}
-                onClick={() => {
-                  alert('تم تقديم الطلب وتحويله إلى الدائرة الفنية.\nرقم المتابعة: ' + data.reqNumber);
-                  onCases();
-                }}
-              >
+              <Button variant="ghost" icon="save" onClick={handleSave}>حفظ كمسودة</Button>
+              <Button icon="print" onClick={handlePrint}>طباعة بصيغة أصلية</Button>
+              <Button variant="primary" icon="send" disabled={progress < 60} onClick={() => { onCases(); }}>
                 تقديم وتحويل الطلب
               </Button>
             </div>
@@ -224,4 +273,4 @@ function FormPage({ code, onNav, onCases }) {
   );
 }
 
-Object.assign(window, { FormPage, computeFees });
+Object.assign(window, { FormPage, computeFees, LegacyEngineHost });

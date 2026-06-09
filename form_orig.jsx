@@ -7,7 +7,7 @@ function OrigForm({ data, classKey, phaseKey }) {
   return (
     <div className="origform">
       <div className="origform__head">
-        <img src="assets/logo.png" className="origform__logo" alt="" />
+        <img src="assets/img/logo.png" className="origform__logo" alt="" />
         <div className="origform__heading">
           <h2>طلب عمل اشتراك جديد</h2>
           <p>الشركة العامة لتوزيع كهرباء بغداد — كهرباء الرصافة</p>

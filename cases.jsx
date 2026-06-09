@@ -30,7 +30,7 @@ const SAMPLE_CASE = {
   ],
 };
 
-function CaseDetail({ caseData = SAMPLE_CASE, onBack }) {
+function CaseDetail({ caseData = SAMPLE_CASE, onBack, onOpenForm }) {
   const svc = window.SERVICE_MAP[caseData.svc];
   const sec = window.SECTION_MAP[svc.section];
   return (
@@ -60,10 +60,12 @@ function CaseDetail({ caseData = SAMPLE_CASE, onBack }) {
               fontSize: '0.78rem',
               fontWeight: 800,
             }}>{svc.code}</span>
-            <Button size="sm" icon="edit" style={{ background: 'rgba(255,255,255,0.16)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)' }}>
-              تعديل
-            </Button>
-            <Button size="sm" icon="print" style={{ background: 'rgba(255,255,255,0.16)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)' }}>
+            {onOpenForm && (
+              <Button size="sm" icon="edit" onClick={() => onOpenForm(caseData.svc)} style={{ background: 'rgba(255,255,255,0.16)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)' }}>
+                متابعة التعبئة
+              </Button>
+            )}
+            <Button size="sm" icon="print" onClick={(e) => window.LegacyForm && window.LegacyForm.print(caseData.svc, e)} style={{ background: 'rgba(255,255,255,0.16)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)' }}>
               طباعة
             </Button>
           </div>

@@ -6,7 +6,27 @@ function ServiceDetail({ code, onNav, onStart }) {
   const svc = window.SERVICE_MAP[code];
   const sec = window.SECTION_MAP[svc.section];
   const [infoOpen, setInfoOpen] = useState(false);
-  const guide = window.SERVICE_GUIDES[code] || window.SERVICE_GUIDES['CS0001'];
+  const guide = (window.guideFor && window.guideFor(code)) || {
+    purpose: svc.name,
+    when: [],
+    docs: [],
+    pitfalls: [],
+    legal: 'تخضع لأنظمة شركة توزيع كهرباء بغداد / قطاع الرصافة.',
+    procedure: [],
+    flowchart: null,
+  };
+  const workflowSteps = (guide.procedure && guide.procedure.length)
+    ? guide.procedure.map((name, i) => ({
+        ico: ['edit_document', 'currency_exchange', 'location_searching', 'price_change', 'payments', 'electrical_services'][i % 6],
+        name: typeof name === 'string' ? name : (name.title || name.name || String(name)),
+        who: '—',
+        dur: '—',
+      }))
+    : [
+      { ico: 'edit_document', name: 'استلام وتعبئة النموذج', who: 'موظف خدمات المشتركين', dur: 'فوري' },
+      { ico: 'currency_exchange', name: 'دفع رسوم طلب الخدمة', who: 'الصندوق', dur: '15 دقيقة' },
+      { ico: 'location_searching', name: 'كشف ميداني للموقع', who: 'الدائرة الفنية', dur: '٣ أيام' },
+    ];
 
   // Compute fees breakdown estimate
   const feeRows = svc.code === 'CS0001'
@@ -201,15 +221,13 @@ function ServiceDetail({ code, onNav, onStart }) {
               <h3 className="section__title"><Icon name="route" /> مسار الطلب</h3>
               <span className="muted" style={{ fontSize: '0.78rem' }}>المرحلة الحالية: استلام</span>
             </div>
+            {guide.flowchart && (
+              <div style={{ marginBottom: 14, borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)' }}>
+                <img src={guide.flowchart} alt="مخطط انسيابي" style={{ width: '100%', display: 'block' }} />
+              </div>
+            )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {[
-                { ico: 'edit_document', name: 'استلام وتعبئة النموذج', who: 'موظف خدمات المشتركين', dur: 'فوري' },
-                { ico: 'currency_exchange', name: 'دفع رسوم طلب الخدمة', who: 'الصندوق', dur: '15 دقيقة' },
-                { ico: 'location_searching', name: 'كشف ميداني للموقع', who: 'الدائرة الفنية', dur: '٣ أيام' },
-                { ico: 'price_change', name: 'تقدير الأجور والمطالبة المالية', who: 'الدائرة المالية', dur: 'يوم واحد' },
-                { ico: 'payments', name: 'دفع المطالبة وإصدار الموافقة', who: 'الصندوق + المدير', dur: 'يوم' },
-                { ico: 'electrical_services', name: 'تنفيذ التوصيل وإصدار الاشتراك', who: 'الدائرة الفنية', dur: 'يومان' },
-              ].map((s, i) => (
+              {workflowSteps.map((s, i) => (
                 <div key={i} style={{
                   display: 'grid',
                   gridTemplateColumns: '40px 1fr auto',

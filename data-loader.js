@@ -166,25 +166,28 @@
       const raw = localStorage.getItem('cs_drafts_v1');
       if (!raw) return rows;
       const drafts = JSON.parse(raw);
-      Object.entries(drafts).forEach(([key, d]) => {
-        const code = d.code || (key.match(/^([A-Z]{2}\d{4})/) || [])[1] || key;
-        const data = d.data || d.fields || {};
-        const subscriber = data.subscriberName || data.subscriber || data.name || 'مسودة بدون اسم';
-        const updated = d.updatedAt || d.savedAt || d.ts || Date.now();
+      Object.entries(drafts).forEach(([code, d]) => {
+        if (!d || typeof d !== 'object') return;
+        const svcCode = /^[A-Z]{2}\d{4}$/.test(code) ? code : (d.code || code);
+        const subscriber = d.subscriberName || d.subscriber || d.name || 'مسودة بدون اسم';
+        const ref = d.__caseRef || d.refNo || d.ref || ('DRAFT-' + svcCode);
+        const updated = d.__savedAt || d.updatedAt || d.savedAt || d.ts || 0;
+        const ts = typeof updated === 'number' ? updated : (Date.parse(updated) || 0);
         rows.push({
-          id: d.ref || d.reference || key,
-          svc: code,
+          id: ref,
+          svc: svcCode,
           subscriber,
-          status: d.status || 'مسودة محفوظة',
-          fee: typeof d.fee === 'number' ? d.fee : 0,
-          age: relAge(typeof updated === 'number' ? updated : Date.parse(updated)),
-          officer: d.officer || '—',
-          priority: d.priority || (code === 'CA0002' ? 'urgent' : 'standard'),
-          _ts: typeof updated === 'number' ? updated : Date.parse(updated) || 0,
+          status: d.__status || d.status || 'مسودة محفوظة',
+          fee: typeof d.__feeTotal === 'number' ? d.__feeTotal : (typeof d.fee === 'number' ? d.fee : 0),
+          age: relAge(ts || Date.now()),
+          officer: d.__officer || d.officer || '—',
+          priority: d.__priority || d.priority || (svcCode === 'CA0002' ? 'urgent' : 'standard'),
+          _ts: ts,
+          _draft: d,
         });
       });
       rows.sort((a, b) => b._ts - a._ts);
-      rows.forEach((r) => delete r._ts);
+      rows.forEach((r) => { delete r._ts; });
     } catch (e) {
       console.warn('drafts parse', e);
     }
@@ -192,37 +195,67 @@
   }
 
   function buildKpis(cases) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const t0 = today.getTime();
-    const todayCases = cases.filter((c) => {
-      try {
-        const raw = localStorage.getItem('cs_drafts_v1');
-        const drafts = JSON.parse(raw || '{}');
-        const d = drafts[c.id] || Object.values(drafts).find((x) => (x.ref || x.reference) === c.id);
-        const ts = d && (d.updatedAt || d.savedAt || d.ts);
-        return ts && (typeof ts === 'number' ? ts : Date.parse(ts)) >= t0;
-      } catch { return false; }
-    }).length;
     return {
-      todayCases: todayCases || cases.length,
-      todayDelta: Math.min(12, todayCases),
+      todayCases: cases.length,
+      todayDelta: Math.min(12, cases.length),
       pending: cases.length,
       collected: cases.reduce((s, c) => s + (c.fee || 0), 0),
       satisfaction: 94,
     };
   }
 
+  function guideFor(code, servicesObj, meta) {
+    const svc = servicesObj[code];
+    if (!svc) return null;
+    const sec = (meta.sections || {})[svc.section] || {};
+    const g = svc.guide || {};
+    const title = pickName(svc);
+    return {
+      purpose: g.definition || g.purpose || ('تقدّم خدمة «' + title + '» عبر مركز خدمات المشتركين — قسم ' + (sec.name || svc.section) + '.'),
+      when: (g.when || g.conditions || g.eligibility || []).length
+        ? (g.when || g.conditions || g.eligibility)
+        : ['استكمال الوثائق المطلوبة من المشترك.', 'دفع الرسوم في الصندوق قبل تحويل الطلب.', 'عدم وجود حالات معلقة على نفس الاشتراك.'],
+      docs: (g.documents || g.docs || g.requiredDocs || []).length
+        ? (g.documents || g.docs || g.requiredDocs).map((d) => (typeof d === 'string' ? d : (d.name || d.title || String(d))))
+        : ['هوية الأحوال المدنية وبطاقة السكن.', 'مستند ملكية أو وكالة قانونية عند اللزوم.'],
+      fees: g.fees || g.pricingNote || (svc.pricing && svc.pricing.display) || (svc.fixedPrice ? (svc.fixedPrice + ' د.ع') : 'تُحسب داخل النموذج حسب الصنف ونوع الربط.'),
+      legal: g.legal || g.legalBasis || 'تخضع لأنظمة شركة توزيع كهرباء بغداد / قطاع الرصافة.',
+      pitfalls: (g.pitfalls || g.commonErrors || g.warnings || []).length
+        ? (g.pitfalls || g.commonErrors || g.warnings)
+        : ['تأكد من اكتمال البيانات قبل التحويل.', 'دقّق التوقيع وختم المركز قبل تسليم النسخة للمشترك.'],
+      procedure: g.procedure || g.steps || [],
+      flowchart: g.flowchart || null,
+    };
+  }
+
+  function loadDraftsIntoApp() {
+    try {
+      window.App = window.App || {};
+      window.App.drafts = JSON.parse(localStorage.getItem('cs_drafts_v1') || '{}');
+    } catch {
+      window.App = window.App || {};
+      window.App.drafts = {};
+    }
+  }
+
   function applyGlobals(servicesJson, pricesJson) {
     const meta = servicesJson.meta || {};
     const servicesObj = servicesJson.services || {};
+    window.__SERVICES_JSON__ = servicesJson;
+    window.SERVICE_FULL = servicesObj;
     window.SECTIONS = buildSections(meta);
     window.SERVICES = buildServices(servicesObj);
     window.SECTION_MAP = Object.fromEntries(window.SECTIONS.map((s) => [s.code, s]));
     window.SERVICE_MAP = Object.fromEntries(window.SERVICES.map((s) => [s.code, s]));
     window.PRICING = buildPricing((pricesJson && pricesJson.catalog) || []);
+    window.guideFor = (code) => guideFor(code, servicesObj, meta);
+    window.__rebuildRecentCases = buildRecentCases;
+    window.__rebuildKpis = buildKpis;
     window.RECENT_CASES = buildRecentCases();
     window.KPIS = buildKpis(window.RECENT_CASES);
+    window.App = window.App || {};
+    window.App.data = servicesJson;
+    loadDraftsIntoApp();
     window.__DATA_LOADED__ = true;
     window.dispatchEvent(new Event('tq-data-ready'));
   }
