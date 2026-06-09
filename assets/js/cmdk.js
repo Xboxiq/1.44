@@ -28,6 +28,7 @@
     items.push({ kind: 'nav', t: 'الحالات النشطة', s: 'مسوّداتك المحفوظة', ico: 'inventory_2', href: '#/cases' });
     items.push({ kind: 'nav', t: 'جدول الأجور', s: 'الأسعار الرسمية ٢٠٢٦', ico: 'request_quote', href: '#/fees' });
     items.push({ kind: 'nav', t: 'دليل الإجراءات', s: 'شرح موحّد للموظفين', ico: 'menu_book', href: '#/guide' });
+    items.push({ kind: 'nav', t: 'التقارير', s: 'مؤشرات الأداء', ico: 'bar_chart', href: '#/reports' });
 
     const App = global.App;
     if (App && App.data && App.data.services) {

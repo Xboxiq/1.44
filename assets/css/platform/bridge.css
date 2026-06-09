@@ -1,22 +1,80 @@
-/* Bridge: form engine (styles.css) inside platform shell */
-.platform-svc-body .workspace {
-  margin-top: 0;
+/* Bridge: integrate legacy form engine inside platform theme */
+body.theme-platform {
+  background: var(--bg);
+}
+body.drawer-open { overflow: hidden; }
+
+/* Form engine inside formshell */
+.platform-form-engine .workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  margin: 0;
+  padding: 0;
+}
+.platform-form-engine .ws-main {
+  width: 100%;
+  max-width: none;
+  flex: 1;
+}
+.platform-form-engine .ws-side {
+  width: 100%;
+  max-width: none;
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+  padding-top: 16px;
+  background: var(--surface-2);
   border-radius: var(--radius-lg);
+  padding: 16px;
+}
+.platform-form-engine .cc-bar {
+  border-radius: var(--radius-lg);
+  margin-bottom: 12px;
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
+}
+.platform-form-engine .form-mode-bar {
+  display: none;
+}
+.platform-form-engine .form-stage {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
-.platform-svc-body .cc-bar {
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+.platform-form-engine .sheet-scroll {
+  max-height: none;
+  padding: 12px;
 }
+.platform-form-engine .notes-card,
+.platform-form-engine .agent-assist {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+
+/* Guide / preview inside platform */
 .platform-svc-body .guide-view,
-.platform-svc-body .preview-wrap {
+.guide-page,
+.preview-wrap,
+.preview-bar {
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   background: var(--surface);
-  padding: var(--s4);
   box-shadow: var(--shadow-sm);
 }
+
+/* Hide legacy app chrome when platform is active */
+body.theme-platform .view--home,
+body.theme-platform .view--service,
+body.theme-platform .app-chrome--legacy {
+  display: none !important;
+}
+
 .skip-link {
   position: absolute;
   inset-inline-start: 12px;
@@ -30,3 +88,76 @@
   text-decoration: none;
 }
 .skip-link:focus { top: 12px; }
+
+/* KPI grid from archive */
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+.kpi {
+  padding: 16px 18px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.kpi__ico {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: grid; place-items: center;
+  background: color-mix(in srgb, var(--kpi-color, var(--brand-navy)) 12%, transparent);
+  color: var(--kpi-color, var(--brand-navy));
+  margin-bottom: 10px;
+}
+.kpi__label { font-size: 0.78rem; color: var(--text-soft); font-weight: 600; }
+.kpi__value { font-size: 1.5rem; font-weight: 800; margin: 4px 0; }
+.kpi__delta { font-size: 0.76rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
+.kpi__delta.up { color: var(--ok); }
+.kpi__delta.dn { color: var(--err); }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+@media (max-width: 960px) { .grid-2 { grid-template-columns: 1fr; } }
+
+.stack { display: flex; flex-direction: column; gap: 16px; }
+.row-between {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.cluster { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.pageheader__title {
+  font-family: var(--font-cmd);
+  font-weight: var(--fw-extra);
+  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+  margin: 0;
+}
+.pageheader__sub {
+  margin: 6px 0 0;
+  color: var(--text-soft);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+.muted { color: var(--text-soft); }
+.mono { font-family: var(--font-mono); }
+
+.rs-savebadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.rs-savebadge.is-saved { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 35%, var(--border)); }
+.rs-savebadge.is-saving { color: var(--info); }
+.rs-savebadge.is-error { color: var(--err); }
