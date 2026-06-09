@@ -1078,3 +1078,106 @@
   thead { display: table-header-group; }
   tfoot { display: table-footer-group; }
 }
+
+/* =============================================================
+   DIWAN — Editorial "Papyr" Print Enhancements
+   --------------------------------------------------------------
+   تحسينات الترويسة والذيل للطباعة الرسمية بطابع الديوان:
+   - ترويسة بإطار مزدوج، شعار دائري بحد عريض، شارة "نموذج رقم XX"
+     محفورة في الزاوية اليسرى (data-form-no)
+   - تخفيف العناصر الزخرفية للديوان (التيكر/المقعد) أثناء الطباعة
+   - ذيل احترافي (colophon) يظهر فقط في الطباعة عبر body data-*
+   ============================================================= */
+@media print {
+  /* ===== إخفاء كامل لأي عناصر الواجهة الجديدة (Diwan) ===== */
+  .wire, .wire *,
+  .head, .head *,
+  .dshell > .minirail,
+  .dtabs, .dtabs *,
+  .sdtabs, .sdtabs *,
+  .dfoot, .dfoot *,
+  .crumb,
+  .svcd__head, .svcd__head *,
+  .svcd__body-host > nav.sdtabs,
+  .reg__intro, .reg__strip {
+    display: none !important;
+  }
+  /* الديوان لا يظهر كخلفية أثناء طباعة النموذج */
+  body.is-printing .diwan::before { display: none !important; }
+  body.is-printing .diwan { background: #fff !important; }
+
+  /* ===== الترويسة الرسمية (papyr) — تحسين بصري للطباعة =====
+     - حد سفلي مزدوج بدل المفرد
+     - شعار دائري بإطار بارز (يبقى ملوّناً)
+     - شارة "نموذج رقم XXXX" مرسومة في الزاوية اليسرى
+       باستخدام data-form-no من .sheet-letterhead */
+  #printRoot .sheet-letterhead,
+  .sheet-letterhead {
+    border-block-end: 2.4pt double #000 !important;
+    padding-block-end: 3.5mm !important;
+  }
+  /* الشعار في إطار دائري */
+  #printRoot .sheet-logo,
+  .sheet-logo {
+    border: 1.2pt solid #000 !important;
+    border-radius: 50% !important;
+    padding: 1pt !important;
+    background: #fff !important;
+    width: 18mm !important;
+    height: 18mm !important;
+    box-sizing: border-box !important;
+  }
+
+  /* شارة رقم النموذج — اليمين البصري في RTL (top-right) */
+  .sheet-letterhead[data-form-no]::after {
+    content: "نموذج " attr(data-form-no) !important;
+    position: absolute !important;
+    top: 1mm !important;
+    right: 1mm !important;     /* اليمين البصري الفيزيائي */
+    left: auto !important;
+    width: 24mm !important;
+    min-height: 14mm !important;
+    border: 0.8pt solid #000 !important;
+    background: #fff !important;
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+    font-family: var(--print-font) !important;
+    font-weight: 800 !important;
+    font-size: 9pt !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    padding: 2mm 1mm !important;
+    box-sizing: border-box !important;
+    letter-spacing: 0.02em !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  /* تعديل padding اللوحة لإفساح مكان للشارة على اليمين */
+  .sheet-letterhead { padding-right: 27mm !important; padding-left: 22mm !important; }
+
+  /* ===== Colophon — ذيل طباعة بسيط (يظهر مرة واحدة في نهاية المستند) =====
+     نُلصقه بعد آخر عنصر داخل #printSheet عبر ::after — يحتوي على
+     مرجع الحالة (إن وُجد) + ختم تاريخ الطباعة. */
+  #printSheet::after {
+    content: "نظام تدفّق الخير — كهرباء الرصافة · مركز RS-014 · " attr(data-form-no)
+             " · طُبع في " attr(data-print-stamp) !important;
+    display: block !important;
+    margin-top: 6mm !important;
+    padding-top: 2mm !important;
+    border-top: 0.4pt dashed #555 !important;
+    font-family: var(--print-font) !important;
+    font-size: 7.5pt !important;
+    font-weight: 600 !important;
+    color: #444 !important;
+    -webkit-text-fill-color: #444 !important;
+    letter-spacing: 0.04em !important;
+    text-align: center !important;
+    break-before: avoid !important;
+    page-break-before: avoid !important;
+  }
+  /* لا تُظهر الـcolophon إن لم نضع data-print-stamp (تصدير Word مثلاً) */
+  #printSheet:not([data-print-stamp])::after { content: none !important; }
+}
+

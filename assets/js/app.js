@@ -1261,6 +1261,10 @@ function route() {
     const hash = location.hash || '#/';
     const m = hash.match(/^#\/service\/([A-Z]{2}\d{4})(?:\/(form|guide|preview))?/);
     if (m) renderServiceView(m[1], m[2] || 'form');
+    else if (hash.startsWith('#/services')) renderServicesRegistry();
+    else if (hash.startsWith('#/fees'))     renderFeesView();
+    else if (hash.startsWith('#/guide'))    renderGuideView();
+    else if (hash.startsWith('#/cases'))    renderCasesView();
     else renderHome();
   };
   // انتقال سلس بين الصفحات (View Transitions API) مع احترام تقليل الحركة
@@ -1276,7 +1280,69 @@ function route() {
 
 const app = () => $('#app');
 
+/* ============================================================
+   DIWAN ROUTES — تفويض العرض للطبقة الجديدة (Skin & Views)
+   ------------------------------------------------------------
+   نُحافظ على renderHomeLegacy (التصميم القديم) كاحتياط، لكن
+   كل المسارات الجديدة تستخدم Diwan.* لتنسجم مع شكل الديوان.
+   ============================================================ */
 function renderHome() {
+  App.current = null;
+  const a = app();
+  if (!a) return;
+  if (window.Diwan && typeof window.Diwan.renderHome === 'function') {
+    window.Diwan.renderHome(a, App);
+    setActiveNav('#/');
+    enhanceView();
+    return;
+  }
+  renderHomeLegacy();
+}
+
+function renderServicesRegistry() {
+  App.current = null;
+  const a = app();
+  if (!a) return;
+  if (window.Diwan && typeof window.Diwan.renderRegistry === 'function') {
+    window.Diwan.renderRegistry(a, App, {});
+    setActiveNav('#/');
+    enhanceView();
+  } else {
+    renderHomeLegacy();
+  }
+}
+
+function renderFeesView() {
+  App.current = null;
+  const a = app();
+  if (!a) return;
+  if (window.Diwan && typeof window.Diwan.renderFees === 'function') {
+    window.Diwan.renderFees(a, App);
+    enhanceView();
+  } else renderHomeLegacy();
+}
+
+function renderGuideView() {
+  App.current = null;
+  const a = app();
+  if (!a) return;
+  if (window.Diwan && typeof window.Diwan.renderGuide === 'function') {
+    window.Diwan.renderGuide(a, App);
+    enhanceView();
+  } else renderHomeLegacy();
+}
+
+function renderCasesView() {
+  App.current = null;
+  const a = app();
+  if (!a) return;
+  if (window.Diwan && typeof window.Diwan.renderCases === 'function') {
+    window.Diwan.renderCases(a, App);
+    enhanceView();
+  } else renderHomeLegacy();
+}
+
+function renderHomeLegacy() {
   App.current = null;
   const meta = App.data.meta;
   const view = el('main', { class: 'view view--home' });
@@ -1424,8 +1490,26 @@ function renderServiceView(code, tab) {
   const svc = App.data.services[code];
   if (!svc) { renderHome(); return; }
   App.current = code;
-  const sec = App.data.meta.sections[svc.section];
 
+  // —— Diwan path: editorial header + sub-tabs + reuse existing engines ——
+  if (window.Diwan && typeof window.Diwan.renderServiceShell === 'function') {
+    window.Diwan.renderServiceShell(app(), App, code, tab || 'form');
+    // post-mount initialisations (same as legacy path)
+    if ((tab || 'form') === 'form') {
+      setSavedBadge(true);
+      updateFieldMeter();
+      centerSheetScroll();
+      const sla = (draftOf(code).__sla) || 'standard';
+      if (typeof applySLAContext === 'function') applySLAContext(sla);
+    }
+    setActiveNav('#/');
+    window.scrollTo(0, 0);
+    enhanceView();
+    return;
+  }
+
+  // Legacy path (fallback if Diwan layer is unavailable)
+  const sec = App.data.meta.sections[svc.section];
   const view = el('main', { class: 'view view--service' });
 
   // Breadcrumb
@@ -2431,6 +2515,15 @@ function isolatedPrint(mode) {
   clone.removeAttribute('aria-hidden');
   syncClonedInputs(sheet, clone);
 
+  // طابع زمني للطباعة (يُستخدم في الـcolophon)
+  try {
+    const ts = currentTimeStamp(true);
+    clone.setAttribute('data-print-stamp', ts);
+    if (App.current && App.data && App.data.services[App.current]) {
+      clone.setAttribute('data-form-no', App.data.services[App.current].formNumber || App.current);
+    }
+  } catch (e) { /* non-fatal */ }
+
   const root = document.createElement('div');
   root.id = 'printRoot';
   root.className = 'print-root print-root--' + variant;
@@ -2890,6 +2983,17 @@ async function boot() {
     ]));
     return;
   }
+  // expose engine helpers to the Diwan view layer
+  window.renderGuide = renderGuide;
+  window.renderPreview = renderPreview;
+  window.renderWorkspace = renderWorkspace;
+  window.resolveServicePrice = resolveServicePrice;
+
+  // initialise Diwan shell (wire ticker, clock, nav sync)
+  if (window.Diwan && typeof window.Diwan.boot === 'function') {
+    try { window.Diwan.boot(App); } catch (e) { console.error('Diwan.boot failed', e); }
+  }
+
   initTheme();
   initBackToTop();
   initAurora();
