@@ -112,18 +112,24 @@ function useAutosave(key, initial) {
   });
   const [status, setStatus] = useState('saved'); // saving | saved | error
   const t = useRef(null);
+  const dataRef = useRef(data);
+  dataRef.current = data;
 
   const update = useCallback((patch) => {
-    setData(prev => ({ ...prev, ...(typeof patch === 'function' ? patch(prev) : patch) }));
+    setData(prev => {
+      const next = { ...prev, ...(typeof patch === 'function' ? patch(prev) : patch) };
+      dataRef.current = next;
+      return next;
+    });
     setStatus('saving');
     if (t.current) clearTimeout(t.current);
     t.current = setTimeout(() => {
       try {
-        localStorage.setItem(key, JSON.stringify({ ...data, ...(typeof patch === 'function' ? patch(data) : patch) }));
+        localStorage.setItem(key, JSON.stringify(dataRef.current));
         setStatus('saved');
       } catch { setStatus('error'); }
     }, 500);
-  }, [data, key]);
+  }, [key]);
 
   return [data, update, status];
 }

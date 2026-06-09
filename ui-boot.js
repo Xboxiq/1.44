@@ -49,6 +49,9 @@
     if (!window.React || !window.ReactDOM || !window.Babel) {
       throw new Error('تعذّر تحميل React أو Babel');
     }
+    if (!window.renderWorkspace || !window.LegacyForm) {
+      throw new Error('محرك النماذج (app.js) غير محمّل — تحقق من ترتيب السكربتات');
+    }
 
     installHookGlobals();
 

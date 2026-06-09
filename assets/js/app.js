@@ -2989,10 +2989,76 @@ function initCommandShell() {
 }
 
 /* ============================================================
+   جسر React — محرك النماذج دون واجهة legacy
+   ============================================================ */
+function exposeEngineGlobals() {
+  window.renderGuide = renderGuide;
+  window.renderPreview = renderPreview;
+  window.renderWorkspace = renderWorkspace;
+  window.resolveServicePrice = resolveServicePrice;
+  window.printUnified = printUnified;
+  window.saveDrafts = saveDrafts;
+  window.setSavedBadge = setSavedBadge;
+  window.getFormMode = getFormMode;
+  window.setFormMode = setFormMode;
+  window.reloadPlatformData = function reloadPlatformData() {
+    if (typeof window.__rebuildRecentCases === 'function') {
+      window.RECENT_CASES = window.__rebuildRecentCases();
+      window.KPIS = window.__rebuildKpis(window.RECENT_CASES);
+    }
+  };
+
+  window.LegacyForm = {
+    mount(container, code, mode) {
+      const svc = App.data && App.data.services && App.data.services[code];
+      if (!svc || !container) return;
+      App.current = code;
+      if (typeof setFormMode === 'function') {
+        setFormMode(code, mode === 'smart' ? 'smart' : 'original');
+      }
+      resetFieldIds();
+      container.innerHTML = '';
+      container.appendChild(renderWorkspace(code, svc));
+    },
+    unmount(container) {
+      if (container) container.innerHTML = '';
+    },
+    getFull(code) {
+      return App.data && App.data.services && App.data.services[code];
+    },
+    print(code, ev) {
+      const svc = App.data && App.data.services && App.data.services[code];
+      if (svc) printUnified(code, svc, ev);
+    },
+    save() {
+      saveDrafts();
+      if (typeof window.reloadPlatformData === 'function') window.reloadPlatformData();
+    },
+    clear(code) {
+      delete App.drafts[code];
+      saveDrafts();
+      if (typeof window.reloadPlatformData === 'function') window.reloadPlatformData();
+    },
+  };
+}
+
+function bootReactEngine() {
+  loadDrafts();
+  if (window.__SERVICES_JSON__) App.data = window.__SERVICES_JSON__;
+  if (!App.data) {
+    console.error('React engine: services data missing — load data-loader.js first');
+    return;
+  }
+  exposeEngineGlobals();
+  initTheme();
+  document.body.classList.add('theme-platform');
+  window.__ENGINE_READY__ = true;
+}
+
+/* ============================================================
    الإقلاع
    ============================================================ */
 async function boot() {
-  if (window.__REACT_UI__) return;
   loadDrafts();
   renderSkeleton();
   try {
@@ -3039,4 +3105,9 @@ async function boot() {
   window.addEventListener('hashchange', route);
   route();
 }
-document.addEventListener('DOMContentLoaded', boot);
+
+if (window.__REACT_UI__) {
+  bootReactEngine();
+} else {
+  document.addEventListener('DOMContentLoaded', boot);
+}

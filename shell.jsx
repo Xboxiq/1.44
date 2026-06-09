@@ -48,14 +48,15 @@ function SectionBadge({ code }) {
 
 // ---------- Topbar ----------
 function Topbar({ user = 'م. كرار البياتي', center = 'مركز الرصافة - فرع الكرادة', onCmdK }) {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(() => localStorage.getItem('cs_theme') === 'dark');
   useEffect(() => {
     document.body.classList.toggle('dark', dark);
+    localStorage.setItem('cs_theme', dark ? 'dark' : 'light');
   }, [dark]);
   return (
     <div className="rs-topbar">
       <a className="rs-topbar__brand" href="#/">
-        <div className="rs-topbar__mark"><img src="assets/logo.png" alt="" /></div>
+        <div className="rs-topbar__mark"><img src="assets/img/logo.png" alt="" /></div>
         <div className="rs-topbar__text">
           <strong>تدفّق الخير</strong>
           <small>منصة خدمات المشتركين — كهرباء الرصافة</small>
@@ -110,7 +111,7 @@ function CommandRail({ route, onNav }) {
   return (
     <aside className="rs-rail" tabIndex={0}>
       <a className="rs-rail__brand" href="#/" onClick={(e) => { e.preventDefault(); onNav('home'); }}>
-        <div className="rs-rail__mark"><img src="assets/logo.png" alt="" /></div>
+        <div className="rs-rail__mark"><img src="assets/img/logo.png" alt="" /></div>
         <div className="rs-rail__text">
           <strong>تدفّق الخير</strong>
           <small>RASAFA · CS HUB</small>
