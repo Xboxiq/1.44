@@ -114,9 +114,10 @@
     const h = location.hash || '#/';
     let active = 'home';
     if (h.startsWith('#/services') || h.startsWith('#/service/')) active = 'services';
-    else if (h.startsWith('#/cases')) active = 'cases';
+    else if (h.startsWith('#/cases') || h.startsWith('#/case/')) active = 'cases';
     else if (h.startsWith('#/fees')) active = 'fees';
     else if (h.startsWith('#/guide')) active = 'guide';
+    else if (h.startsWith('#/reports')) active = 'reports';
     $$('#platformRail .rs-rail__link').forEach((a) => {
       a.classList.toggle('is-active', a.dataset.route === active);
     });
@@ -472,101 +473,79 @@
     setTimeout(() => { try { searchInp.focus({ preventScroll: true }); } catch (e) {} }, 0);
   };
 
-  /* ---------- SERVICE SHELL ---------- */
+  /* ---------- SERVICE SHELL (detail / form / guide / preview) ---------- */
   P.renderServiceShell = function (appNode, App, code, tab) {
     const svc = App.data.services[code];
     if (!svc) { P.renderHome(appNode, App); return; }
-    const meta = App.data.meta;
-    const sec = meta.sections[svc.section];
-    const draft = (App.drafts && App.drafts[code]) || {};
-    const color = SECTION_COLORS[svc.section] || '#1d4ed8';
-    const view = el('div', { class: 'app-page fade-in' });
-
-    view.appendChild(crumbs([
-      { label: 'الرئيسية', href: '#/' },
-      { label: 'الخدمات', href: '#/services' },
-      { label: code + ' — ' + svc.title },
-    ]));
-
-    const lede = (svc.guide && svc.guide.definition) ? svc.guide.definition :
-      'تقدّم هذه الخدمة للمشتركين عبر مركز خدمات المشتركين ضمن إجراءات قسم ' + (sec ? sec.name : '') + '.';
-
-    const hero = el('section', { class: 'hero', style: { padding: '24px' } }, [
-      el('div', { class: 'hero__row' }, [
-        el('div', {}, [
-          el('span', { class: 'hero__eyebrow' }, [
-            icon(SECTION_ICONS[svc.section] || 'apps', 16),
-            ' ' + (sec ? sec.name : '') + ' · ' + code,
-          ]),
-          el('h1', { class: 'hero__title', text: svc.title }),
-          el('p', { class: 'hero__sub', text: lede }),
-          el('div', { class: 'cluster', style: { marginTop: '16px' } }, [
-            el('a', { class: 'rs-btn rs-btn--primary rs-btn--lg', href: '#/service/' + code + '/form' }, [
-              el('span', { class: 'rs-btn__ico' }, [icon('play_arrow', 18)]),
-              'ابدأ تعبئة النموذج',
-            ]),
-            el('a', { class: 'rs-btn rs-btn--lg', href: '#/service/' + code + '/guide' }, [
-              el('span', { class: 'rs-btn__ico' }, [icon('info', 18)]),
-              'دليل الخدمة الكامل',
-            ]),
-          ]),
-        ]),
-        el('div', { style: { display: 'grid', gap: '10px', minWidth: '260px' } }, [
-          el('div', { style: { padding: '14px 16px', background: 'rgba(255,255,255,0.08)', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.16)' } }, [
-            el('div', { style: { fontSize: '0.74rem', opacity: 0.7, marginBottom: '4px' }, text: 'المدة المعتادة' }),
-            el('div', { style: { fontWeight: 800, fontSize: '1.25rem' }, text: String(svc.sla || (svc.guide && svc.guide.sla) || 3) + ' أيام عمل' }),
-          ]),
-          (function () {
-            let priceVal = 'تحسب آلياً';
-            if (typeof global.resolveServicePrice === 'function' && svc.pricing) {
-              const pr = global.resolveServicePrice(svc, draft);
-              if (pr && pr.value && pr.value !== '—') priceVal = pr.value;
-            }
-            return el('div', { style: { padding: '14px 16px', background: 'rgba(244,196,48,0.18)', borderRadius: '14px', border: '1px solid rgba(244,196,48,0.4)' } }, [
-              el('div', { style: { fontSize: '0.74rem', opacity: 0.8, marginBottom: '4px' }, text: 'الأجور التقديرية' }),
-              el('div', { style: { fontWeight: 800, fontSize: '1.25rem' }, text: priceVal }),
-            ]);
-          })(),
-        ]),
-      ]),
-    ]);
-    view.appendChild(hero);
-
+    tab = tab || 'overview';
     const canPreview = !!(global.canPreviewWord && global.canPreviewWord(code) && svc.form && svc.form.blocks);
-    if (tab === 'preview' && !canPreview) tab = 'form';
-    const tabDefs = [
-      { id: 'form', label: 'تعبئة النموذج' },
-      canPreview ? { id: 'preview', label: 'المعاينة المطابقة', badge: 'كالأصل' } : null,
-      { id: 'guide', label: 'شرح الخدمة' },
-    ].filter(Boolean);
+    if (tab === 'preview' && !canPreview) tab = 'overview';
 
-    const subtabs = el('nav', { class: 'rs-tabs', role: 'tablist', 'aria-label': 'أقسام الخدمة', style: { marginTop: '8px' } });
-    tabDefs.forEach((t) => {
-      subtabs.appendChild(el('a', {
-        class: 'rs-tabs__item' + (tab === t.id ? ' is-active' : ''),
-        href: '#/service/' + code + '/' + t.id,
-        role: 'tab',
-        'aria-selected': tab === t.id ? 'true' : 'false',
-      }, [
-        el('span', { text: t.label }),
-        t.badge ? el('span', { class: 'rs-tabs__badge', text: t.badge }) : null,
+    document.body.classList.remove('platform-form-active');
+    if (tab === 'form' && global.PlatformForm) {
+      global.PlatformForm.render(appNode, App, code);
+      return;
+    }
+    if (tab === 'guide' && global.PlatformService) {
+      global.PlatformService.renderGuideTab(appNode, App, code);
+      return;
+    }
+    if (tab === 'preview' && global.PlatformService) {
+      global.PlatformService.renderPreviewTab(appNode, App, code);
+      return;
+    }
+    if (global.PlatformService) {
+      global.PlatformService.renderDetail(appNode, App, code);
+    }
+  };
+
+  P.renderCaseDetail = function (appNode, App, ref) {
+    if (global.PlatformCases) global.PlatformCases.renderDetail(appNode, App, ref);
+  };
+
+  P.renderReports = function (appNode, App) {
+    const meta = App.data.meta;
+    const all = Object.values(App.data.services);
+    const view = el('div', { class: 'app-page fade-in' });
+    view.appendChild(crumbs([{ label: 'الرئيسية', href: '#/' }, { label: 'التقارير' }]));
+    view.appendChild(el('h1', { class: 'pageheader__title', text: 'التقارير ومؤشرات الأداء' }));
+    view.appendChild(el('p', { class: 'pageheader__sub', text: 'مؤشرات شهرية لمركز الرصافة — الكرادة (عرض توضيحي).' }));
+
+    const kpis = el('div', { class: 'grid-4' });
+    [
+      ['trending_up', 'إجمالي الحالات (شهر)', '2,481', '+18%'],
+      ['check_circle', 'مُغلقة', '2,134', '+15%'],
+      ['hourglass_empty', 'معلقة', String(Object.keys(App.drafts || {}).length + 247), '+4%'],
+      ['payments', 'محصّل (د.ع)', '148M', '+22%'],
+    ].forEach((row) => {
+      kpis.appendChild(el('div', { class: 'kpi', style: { '--kpi-color': 'var(--brand-navy)' } }, [
+        el('div', { class: 'kpi__ico' }, [icon(row[0])]),
+        el('div', { class: 'kpi__label', text: row[1] }),
+        el('div', { class: 'kpi__value', text: row[2] }),
+        el('span', { class: 'kpi__delta up' }, [icon('trending_up', 14), ' ' + row[3]]),
       ]));
     });
-    view.appendChild(subtabs);
+    view.appendChild(kpis);
 
-    const body = el('div', { class: 'platform-svc-body', style: { marginTop: '16px' } });
-    if (tab === 'guide') {
-      if (typeof global.renderGuide === 'function') body.appendChild(global.renderGuide(svc));
-      else body.appendChild(el('div', { class: 'section', text: 'الدليل غير متاح.' }));
-    } else if (tab === 'preview') {
-      if (typeof global.renderPreview === 'function') body.appendChild(global.renderPreview(code, svc));
-      else body.appendChild(el('div', { class: 'section', text: 'المعاينة غير متاحة.' }));
-    } else {
-      if (typeof global.renderWorkspace === 'function') body.appendChild(global.renderWorkspace(code, svc));
-      else body.appendChild(el('div', { class: 'section', text: 'محرّك النموذج غير متاح.' }));
-    }
-    view.appendChild(body);
-
+    const sec = el('div', { class: 'section' }, [
+      el('div', { class: 'section__head' }, [
+        el('h3', { class: 'section__title' }, [icon('bar_chart', 20), ' توزيع الخدمات حسب القسم']),
+      ]),
+    ]);
+    Object.values(meta.sections).forEach((s) => {
+      const count = all.filter((x) => x.section === s.code).length;
+      const pct = Math.round((count / all.length) * 100);
+      sec.appendChild(el('div', { style: { marginBottom: '14px' } }, [
+        el('div', { class: 'row-between', style: { marginBottom: '6px' } }, [
+          el('span', { style: { fontWeight: 700 } }, [secBadge(s.code), ' ', s.name]),
+          el('span', { class: 'mono', style: { fontWeight: 700 }, text: count + ' خدمة · ' + pct + '%' }),
+        ]),
+        el('div', { style: { height: '12px', borderRadius: '999px', background: 'var(--surface-2)', overflow: 'hidden' } }, [
+          el('div', { style: { width: pct + '%', height: '100%', background: SECTION_COLORS[s.code], borderRadius: '999px' } }),
+        ]),
+      ]));
+    });
+    view.appendChild(sec);
     appNode.innerHTML = '';
     appNode.appendChild(view);
   };
@@ -687,50 +666,7 @@
 
   /* ---------- CASES ---------- */
   P.renderCases = function (appNode, App) {
-    const drafts = App.drafts || {};
-    const draftKeys = Object.keys(drafts).filter((c) => App.data.services[c]);
-    const view = el('div', { class: 'app-page fade-in' });
-    view.appendChild(crumbs([{ label: 'الرئيسية', href: '#/' }, { label: 'الحالات النشطة' }]));
-    view.appendChild(el('div', { class: 'row-between' }, [
-      el('div', {}, [
-        el('h1', { class: 'pageheader__title', text: 'الحالات النشطة' }),
-        el('p', { class: 'pageheader__sub', text: draftKeys.length + ' مسوّدة محفوظة محلياً — تابع التعبئة أو ابدأ خدمة جديدة.' }),
-      ]),
-      el('a', { class: 'rs-btn rs-btn--primary', href: '#/services' }, [
-        el('span', { class: 'rs-btn__ico' }, [icon('add', 18)]),
-        'خدمة جديدة',
-      ]),
-    ]));
-
-    if (!draftKeys.length) {
-      view.appendChild(el('div', { class: 'section', style: { textAlign: 'center', padding: '48px 24px' } }, [
-        icon('inventory_2', 48),
-        el('p', { class: 'muted', style: { marginTop: '12px' }, text: 'لا توجد إضبارات مفتوحة. ابدأ بفتح خدمة من دليل الخدمات.' }),
-      ]));
-    } else {
-      draftKeys.forEach((code, i) => {
-        const svc = App.data.services[code];
-        const sec = App.data.meta.sections[svc.section];
-        const d = drafts[code] || {};
-        const who = (d.subscriberName && String(d.subscriberName).trim()) || '— لم يُكتب اسم المشترك —';
-        view.appendChild(el('a', {
-          class: 'taskrow',
-          href: '#/service/' + code,
-          style: { '--task-color': SECTION_COLORS[svc.section], marginBottom: '8px' },
-        }, [
-          el('span', { class: 'taskrow__ico' }, [icon('folder_open', 22)]),
-          el('div', { class: 'taskrow__main' }, [
-            el('div', { class: 'taskrow__t', text: who }),
-            el('div', { class: 'taskrow__s', text: code + ' · ' + svc.title + ' · ' + (d.__caseRef || 'مسوّدة') }),
-          ]),
-          el('span', { class: 'sladot warn', text: 'مسوّدة' }),
-          el('span', { class: 'taskrow__cta' }, ['متابعة ', icon('arrow_back', 14)]),
-        ]));
-      });
-    }
-
-    appNode.innerHTML = '';
-    appNode.appendChild(view);
+    if (global.PlatformCases) global.PlatformCases.renderList(appNode, App);
   };
 
   /* ---------- BOOT ---------- */

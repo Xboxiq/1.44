@@ -189,6 +189,17 @@ function setFormMode(code, mode) {
     b.classList.toggle('is-active', on);
     b.setAttribute('aria-selected', on ? 'true' : 'false');
   });
+  $$('.platform-form-page .formhead .rs-tabs__item').forEach((b, i) => {
+    const isSmart = (i === 0);
+    const on = (mode === 'smart') === isSmart;
+    b.classList.toggle('is-active', on);
+  });
+  const sub = $('.formhead__sub');
+  if (sub) {
+    sub.textContent = mode === 'smart'
+      ? 'الواجهة الاحترافية — مرتّبة بأقسام ومحسّنة للإدخال السريع'
+      : 'الواجهة الأصلية — طبق الأصل من النموذج الورقي الرسمي';
+  }
   toast(mode === 'smart' ? 'تم التبديل إلى النموذج الذكي' : 'تم التبديل إلى النموذج الأصلي', 'info');
 }
 
@@ -1259,13 +1270,19 @@ function go(hash) { if (location.hash !== hash) location.hash = hash; else route
 function route() {
   const render = () => {
     const hash = location.hash || '#/';
-    const m = hash.match(/^#\/service\/([A-Z]{2}\d{4})(?:\/(form|guide|preview))?/);
-    if (m) renderServiceView(m[1], m[2] || 'form');
-    else if (hash.startsWith('#/services')) renderServicesRegistry();
-    else if (hash.startsWith('#/fees'))     renderFeesView();
-    else if (hash.startsWith('#/guide'))    renderGuideView();
-    else if (hash.startsWith('#/cases'))    renderCasesView();
-    else renderHome();
+    document.body.classList.remove('platform-form-active');
+    const caseM = hash.match(/^#\/case\/(.+)/);
+    if (caseM) renderCaseDetailView(caseM[1]);
+    else {
+      const m = hash.match(/^#\/service\/([A-Z]{2}\d{4})(?:\/(form|guide|preview))?/);
+      if (m) renderServiceView(m[1], m[2] || 'overview');
+      else if (hash.startsWith('#/services')) renderServicesRegistry();
+      else if (hash.startsWith('#/fees'))     renderFeesView();
+      else if (hash.startsWith('#/guide'))    renderGuideView();
+      else if (hash.startsWith('#/reports'))  renderReportsView();
+      else if (hash.startsWith('#/cases'))    renderCasesView();
+      else renderHome();
+    }
   };
   // انتقال سلس بين الصفحات (View Transitions API) مع احترام تقليل الحركة
   if (typeof document.startViewTransition === 'function' && !prefersReducedMotion()) {
@@ -1338,6 +1355,26 @@ function renderCasesView() {
   if (!a) return;
   if (window.Platform && typeof window.Platform.renderCases === 'function') {
     window.Platform.renderCases(a, App);
+    enhanceView();
+  } else renderHomeLegacy();
+}
+
+function renderCaseDetailView(ref) {
+  App.current = null;
+  const a = app();
+  if (!a) return;
+  if (window.Platform && typeof window.Platform.renderCaseDetail === 'function') {
+    window.Platform.renderCaseDetail(a, App, ref);
+    enhanceView();
+  } else renderCasesView();
+}
+
+function renderReportsView() {
+  App.current = null;
+  const a = app();
+  if (!a) return;
+  if (window.Platform && typeof window.Platform.renderReports === 'function') {
+    window.Platform.renderReports(a, App);
     enhanceView();
   } else renderHomeLegacy();
 }
@@ -1493,9 +1530,9 @@ function renderServiceView(code, tab) {
 
   // —— Platform path: hero header + sub-tabs + reuse existing engines ——
   if (window.Platform && typeof window.Platform.renderServiceShell === 'function') {
-    window.Platform.renderServiceShell(app(), App, code, tab || 'form');
+    window.Platform.renderServiceShell(app(), App, code, tab || 'overview');
     // post-mount initialisations (same as legacy path)
-    if ((tab || 'form') === 'form') {
+    if (tab === 'form') {
       setSavedBadge(true);
       updateFieldMeter();
       centerSheetScroll();
@@ -2977,6 +3014,10 @@ async function boot() {
   window.renderWorkspace = renderWorkspace;
   window.resolveServicePrice = resolveServicePrice;
   window.printUnified = printUnified;
+  window.saveDrafts = saveDrafts;
+  window.setSavedBadge = setSavedBadge;
+  window.getFormMode = getFormMode;
+  window.setFormMode = setFormMode;
 
   // initialise Platform shell (rail sync, cmdk, theme, print)
   if (window.Platform && typeof window.Platform.boot === 'function') {
