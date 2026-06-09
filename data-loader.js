@@ -227,29 +227,36 @@
     window.dispatchEvent(new Event('tq-data-ready'));
   }
 
-  window.__DATA_READY__ = Promise.all([
-    fetch('data/services.json', { cache: 'no-store' }).then((r) => {
-      if (!r.ok) throw new Error('services.json ' + r.status);
-      return r.json();
-    }),
-    fetch('data/service_prices.json', { cache: 'no-store' }).then((r) => {
-      if (!r.ok) throw new Error('service_prices.json ' + r.status);
-      return r.json();
-    }),
-  ])
-    .then(([servicesJson, pricesJson]) => {
-      applyGlobals(servicesJson, pricesJson);
-      return true;
-    })
-    .catch((err) => {
-      console.error(err);
-      const root = document.getElementById('root');
-      if (root) {
-        root.innerHTML = '<div style="padding:2rem;font-family:Cairo,sans-serif;direction:rtl">'
-          + '<h2>تعذّر تحميل البيانات</h2>'
-          + '<p>شغّل الموقع عبر خادم محلي: <code>python3 -m http.server 8000</code></p>'
-          + '<p style="color:#b91c1c">' + String(err.message || err) + '</p></div>';
-      }
-      throw err;
-    });
+  function showLoadError(err) {
+    const root = document.getElementById('root');
+    if (root) {
+      root.innerHTML = '<div style="padding:2rem;font-family:Cairo,sans-serif;direction:rtl">'
+        + '<h2>تعذّر تحميل البيانات</h2>'
+        + '<p>شغّل الموقع عبر خادم محلي: <code>python3 -m http.server 8000</code></p>'
+        + '<p style="color:#b91c1c">' + String(err.message || err) + '</p></div>';
+    }
+  }
+
+  function syncJson(url) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url, false);
+    xhr.send(null);
+    if (xhr.status < 200 || xhr.status >= 300) {
+      throw new Error(url + ' (' + xhr.status + ')');
+    }
+    return JSON.parse(xhr.responseText);
+  }
+
+  try {
+    const servicesJson = syncJson('data/services.json');
+    const pricesJson = syncJson('data/service_prices.json');
+    applyGlobals(servicesJson, pricesJson);
+  } catch (err) {
+    console.error(err);
+    showLoadError(err);
+  }
+
+  window.__DATA_READY__ = window.__DATA_LOADED__
+    ? Promise.resolve(true)
+    : Promise.reject(new Error('data not loaded'));
 })();
